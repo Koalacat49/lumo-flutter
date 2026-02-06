@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// 受験日入力画面
 class ExamDateScreen extends StatefulWidget {
   const ExamDateScreen({super.key});
 
@@ -75,8 +76,14 @@ class _ExamDateScreenState extends State<ExamDateScreen> {
               const SizedBox(height: 60),
               ElevatedButton(
                 onPressed: () {
-                  // TODO: 次の画面へ
-                  print('選択: $selectedYear/$selectedMonth/$selectedDay');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PersonalityTestScreen(
+                        examDate: DateTime(selectedYear, selectedMonth, selectedDay),
+                      ),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
@@ -118,6 +125,126 @@ class _ExamDateScreenState extends State<ExamDateScreen> {
           );
         }).toList(),
         onChanged: onChanged,
+      ),
+    );
+  }
+}
+
+// 性格診断画面
+class PersonalityTestScreen extends StatefulWidget {
+  final DateTime examDate;
+  const PersonalityTestScreen({super.key, required this.examDate});
+
+  @override
+  State<PersonalityTestScreen> createState() => _PersonalityTestScreenState();
+}
+
+class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
+  int currentQuestion = 0;
+  final Map<String, String> answers = {};
+
+  final List<Map<String, dynamic>> questions = [
+    {
+      'question': '朝と夜、どちらが集中できる？',
+      'options': ['朝型', '夜型'],
+      'key': 'timePreference',
+    },
+    {
+      'question': '学習スタイルは？',
+      'options': ['短期集中', 'コツコツ'],
+      'key': 'studyStyle',
+    },
+    {
+      'question': '平日の学習時間は？',
+      'options': ['15分以下', '30分', '1時間以上'],
+      'key': 'weekdayTime',
+    },
+    {
+      'question': '週末の学習時間は？',
+      'options': ['30分以下', '1時間', '2時間以上'],
+      'key': 'weekendTime',
+    },
+    {
+      'question': '一番忙しい曜日は？',
+      'options': ['月・火', '水・木', '金・土', '日'],
+      'key': 'busyDay',
+    },
+  ];
+
+  void _selectOption(String option) {
+    setState(() {
+      answers[questions[currentQuestion]['key']] = option;
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+      } else {
+        // TODO: 次の画面へ
+        print('診断完了: $answers');
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final question = questions[currentQuestion];
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            LinearProgressIndicator(
+              value: (currentQuestion + 1) / questions.length,
+              backgroundColor: Colors.grey.shade300,
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+            ),
+            const SizedBox(height: 40),
+            Text(
+              '質問 ${currentQuestion + 1}/${questions.length}',
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              question['question'],
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 40),
+            ...List.generate(
+              (question['options'] as List<String>).length,
+              (index) {
+                final option = (question['options'] as List<String>)[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => _selectOption(option),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: Colors.grey.shade300),
+                        ),
+                      ),
+                      child: Text(option, style: const TextStyle(fontSize: 18)),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
