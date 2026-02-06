@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "405787257554",
+    "project_id": "lumo-ea41a",
+    "storage_bucket": "lumo-ea41a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405787257554:android:a57274f29a7c765c48db0b",
+        "android_client_info": {
+          "package_name": "com.example.lumo_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgEUdocAfWuGaRgwrIzLXf5rdDTldkDUU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
