@@ -3,6 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
 import 'dart:math' as math;
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // クイズ問題データ
 const QUIZ_QUESTIONS = {
@@ -32,6 +35,7 @@ const BADGES = [
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
@@ -454,22 +458,77 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
   List<bool> tasksCompleted = [];
   int completedCount = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _loadData();
-      }); 
-    // 仮のタスク生成（AIスケジュール生成は次のステップ）
-    final diffDays = widget.examDate.difference(DateTime.now()).inDays;
-    if (diffDays > 0) {
-      for (int i = 0; i < diffDays && i < 30; i++) {
-        tasks.add({'day': i + 1, 'task': 'Day ${i + 1}: 単語学習', 'reason': '基礎を固めるため'});
-        tasksCompleted.add(false);
-      }
+ @override
+void initState() {
+  super.initState();
+  Future.delayed(const Duration(milliseconds: 500), () async {
+    await _loadData();
+    if (tasks.isEmpty) {
+      await _generateAISchedule();
     }
-  }
+  });
+}
 
+  Future<void> _generateAISchedule() async {
+  try {
+    final apiKey = dotenv.env['GROQ_API_KEY'] ?? '';
+    print('API Key loaded: ${apiKey.substring(0, 10)}');
+    final diffDays = widget.examDate.difference(DateTime.now()).inDays;
+    final level = widget.level;
+
+    final url = Uri.parse('https://api.groq.com/openai/v1/chat/completions');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $apiKey',
+      },
+      body: jsonEncode({
+        'model': 'llama-3.3-70b-versatile',
+        'messages': [
+          {
+            'role': 'user',
+            'content': '''
+TOEICの学習スケジュールを作成してください。
+レベル: $level
+残り日数: $diffDays日
+タスク数: ${diffDays > 30 ? 30 : diffDays}個
+
+以下のJSON形式で返してください:
+{"tasks": [{"task": "タスク名", "reason": "理由"}]}
+
+タスク名は「単語学習」「文法練習」「リーディング演習」などを含めてください。
+JSONのみ返してください。
+'''
+          }
+        ],
+        'temperature': 0.7,
+        'max_tokens': 2000,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final text = data['choices'][0]['message']['content'] as String;
+      final cleanText = text.replaceAll('```json', '').replaceAll('```', '').trim();
+      final parsed = jsonDecode(cleanText);
+      final taskList = parsed['tasks'] as List;
+      setState(() {
+        tasks = taskList.map((t) => {
+          'task': t['task'] as String,
+          'reason': t['reason'] as String,
+        }).toList();
+        tasksCompleted = List<bool>.filled(tasks.length, false);
+      });
+      await _saveData();
+    } else {
+      print('AI schedule error: ${response.statusCode} ${response.body}');
+    }
+  } catch (e) {
+    print('AI schedule error: $e');
+  }
+}
   Future<void> _saveData() async {
     try {
       await _firestore.collection('users').doc(userId).set({
