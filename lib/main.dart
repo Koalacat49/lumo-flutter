@@ -456,6 +456,7 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
   final String userId = 'default_user';
   List<Map<String, dynamic>> tasks = [];
   List<bool> tasksCompleted = [];
+  List<bool> tasksExpanded = [];
   int completedCount = 0;
 
  @override
@@ -520,6 +521,7 @@ JSONのみ返してください。
           'reason': t['reason'] as String,
         }).toList();
         tasksCompleted = List<bool>.filled(tasks.length, false);
+        tasksExpanded = List<bool>.filled(tasks.length, false);
       });
       await _saveData();
     } else {
@@ -753,10 +755,43 @@ void checkNewBadges() {
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4, offset: const Offset(0, 2))],
                               ),
-                              child: Text(
-                                task['task'],
-                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: done ? Colors.grey : Colors.black87, decoration: done ? TextDecoration.lineThrough : null),
-                              ),
+                              child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Text(
+      task['task'],
+      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: done ? Colors.grey : Colors.black87, decoration: done ? TextDecoration.lineThrough : null),
+    ),
+    if (task['reason'] != null && task['reason'].toString().isNotEmpty) ...[
+      const SizedBox(height: 4),
+      GestureDetector(
+        onTap: () {
+  setState(() {
+    tasksExpanded[i] = !tasksExpanded[i];
+  });
+},
+        child: Row(
+          children: [
+            const Icon(Icons.lightbulb_outline, size: 14, color: Color(0xFFF39C12)),
+            const SizedBox(width: 4),
+            Text(
+              tasksExpanded[i] ? '理由を隠す' : '理由を見る',
+              style: const TextStyle(fontSize: 11, color: Color(0xFFF39C12)),
+            ),
+          ],
+        ),
+      ),
+      if (tasksExpanded[i])
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            task['reason'],
+            style: const TextStyle(fontSize: 11, color: Colors.black54),
+          ),
+        ),
+    ],
+  ],
+),
                             ),
                           ),
                         ],
