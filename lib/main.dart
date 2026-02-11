@@ -4,6 +4,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
 import 'dart:math' as math;
 
+// クイズ問題データ
+const QUIZ_QUESTIONS = {
+  'vocabulary': [
+    {'question': 'The company will ___ a new product next month.', 'options': ['launch', 'lunch', 'branch', 'search'], 'answer': 0, 'explanation': 'launch = 発売する'},
+    {'question': 'Please ___ the door when you leave.', 'options': ['open', 'close', 'lock', 'knock'], 'answer': 2, 'explanation': 'lock = 鍵をかける'},
+    {'question': 'The meeting was ___ until next week.', 'options': ['postponed', 'promoted', 'proposed', 'supposed'], 'answer': 0, 'explanation': 'postponed = 延期された'},
+  ],
+  'grammar': [
+    {'question': 'If I ___ rich, I would travel the world.', 'options': ['am', 'was', 'were', 'be'], 'answer': 2, 'explanation': '仮定法過去: were を使う'},
+    {'question': 'She has ___ in Tokyo for 5 years.', 'options': ['live', 'lived', 'living', 'lives'], 'answer': 1, 'explanation': '現在完了: have/has + 過去分詞'},
+    {'question': 'The book ___ by many people.', 'options': ['read', 'reads', 'is read', 'was read'], 'answer': 2, 'explanation': '受動態現在形: is + 過去分詞'},
+  ],
+  'reading': [
+    {'question': 'What is the main idea? "Sales increased 20%."', 'options': ['Decrease', 'Growth', 'Stable', 'Loss'], 'answer': 1, 'explanation': '20%増加 = Growth(成長)'},
+    {'question': 'The meeting is at 3 PM. What time?', 'options': ['Morning', 'Afternoon', 'Evening', 'Night'], 'answer': 1, 'explanation': '3 PM = 午後3時'},
+    {'question': 'Please reply by Friday. When?', 'options': ['Monday', 'Wednesday', 'Friday', 'Sunday'], 'answer': 2, 'explanation': 'by Friday = 金曜日までに'},
+  ],
+};
+const BADGES = [
+  {'id': 1, 'name': 'First Step', 'icon': '⭐', 'need': 1},
+  {'id': 2, 'name': '5 Tasks', 'icon': '⭐⭐', 'need': 5},
+  {'id': 3, 'name': '10 Tasks', 'icon': '⭐⭐⭐', 'need': 10},
+  {'id': 4, 'name': 'Halfway', 'icon': '⭐⭐⭐⭐', 'need': -1},
+  {'id': 5, 'name': 'Complete', 'icon': '⭐⭐⭐⭐⭐', 'need': -2},
+];
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -418,6 +444,8 @@ class MountainPathScreen extends StatefulWidget {
   @override
   State<MountainPathScreen> createState() => _MountainPathScreenState();
 }
+List<int> shownBadgeIds = [];
+int? popBadgeId;
 
 class _MountainPathScreenState extends State<MountainPathScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -431,7 +459,7 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
     super.initState();
     Future.delayed(const Duration(milliseconds: 500), () {
       _loadData();
-    });
+      }); 
     // 仮のタスク生成（AIスケジュール生成は次のステップ）
     final diffDays = widget.examDate.difference(DateTime.now()).inDays;
     if (diffDays > 0) {
@@ -451,6 +479,7 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
         'level': widget.level,
         'completedCount': completedCount,
         'tasksCompleted': tasksCompleted,
+        'shownBadgeIds': shownBadgeIds,
       });
     } catch (e) {
       print('Save error: $e');
@@ -469,6 +498,7 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
               tasksCompleted[i] = completed[i];
             }
             completedCount = tasksCompleted.where((t) => t).length;
+            shownBadgeIds = List<int>.from(data['shownBadgeIds'] ?? []);
           });
         }
       }
@@ -477,17 +507,91 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
     }
   }
 
-  void toggleComplete(int i) {
-    setState(() {
-      tasksCompleted[i] = !tasksCompleted[i];
-      completedCount = tasksCompleted.where((t) => t).length;
-    });
-    _saveData();
+void checkNewBadges() {
+  final progress = tasks.isEmpty ? 0 : (completedCount / tasks.length * 100).round();
+  
+  for (var badge in BADGES) {
+    final need = badge['need'] as int;
+    final badgeId = badge['id'] as int;
+    
+    bool earned = false;
+    if (need == -1) earned = progress >= 50;
+    else if (need == -2) earned = progress == 100;
+    else earned = completedCount >= need;
+    
+    if (earned && !shownBadgeIds.contains(badgeId)) {
+      setState(() {
+        shownBadgeIds.add(badgeId);
+      });
+      _saveData();
+      // 直接showDialogを呼ぶ
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => BadgePopup(
+              name: badge['name'] as String,
+              icon: badge['icon'] as String,
+            ),
+          );
+        }
+      });
+      break;
+    }
   }
+}
+
+ void toggleComplete(int i) {
+  if (tasksCompleted[i]) return;
+  
+  final task = tasks[i]['task'].toString().toLowerCase();
+  String category = 'vocabulary';
+  if (task.contains('文法') || task.contains('grammar')) {
+    category = 'grammar';
+  } else if (task.contains('読解') || task.contains('リーディング') || task.contains('reading')) {
+    category = 'reading';
+  }
+  
+  showDialog(
+    context: context,
+    builder: (context) => QuizModal(
+      category: category,
+      onComplete: (success) {
+        if (success) {
+          setState(() {
+            tasksCompleted[i] = true;
+            completedCount = tasksCompleted.where((t) => t).length;
+          });
+          print('completedCount: $completedCount');
+          print('shownBadgeIds: $shownBadgeIds');
+          _saveData();
+          checkNewBadges();
+        }
+      },
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
     final progress = tasks.isEmpty ? 0 : (completedCount / tasks.length * 100).round();
+    
+   // バッジポップアップ
+  if (popBadgeId != null) {
+    final badge = BADGES.firstWhere((b) => b['id'] == popBadgeId);
+    Future.microtask(() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => BadgePopup(
+          name: badge['name'] as String,
+          icon: badge['icon'] as String,
+        ),
+      );
+    });
+  }
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -498,21 +602,34 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
             children: [
               // Header
               Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Row(
-                      children: [
-                        Icon(Icons.star, color: Colors.white, size: 28),
-                        SizedBox(width: 8),
-                        Text('Lumo', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    Text('$completedCount タスク完了', style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
+  padding: const EdgeInsets.all(16.0),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      const Row(
+        children: [
+          Icon(Icons.star, color: Colors.white, size: 28),
+          SizedBox(width: 8),
+          Text('Lumo', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+        ],
+      ),
+      Row(
+        children: [
+          Text('$completedCount タスク完了', style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.white, size: 20),
+            onPressed: () async {
+              await _firestore.collection('users').doc(userId).delete();
+              if (context.mounted) {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SplashScreen()));
+              }
+            },
+          ),
+        ],
+      ),
+    ],
+  ),
+),
               // Progress bar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -591,6 +708,143 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+// クイズモーダル
+class QuizModal extends StatefulWidget {
+  final String category;
+  final Function(bool) onComplete;
+  const QuizModal({super.key, required this.category, required this.onComplete});
+  @override
+  State<QuizModal> createState() => _QuizModalState();
+}
+
+class _QuizModalState extends State<QuizModal> {
+  late Map<String, dynamic> question;
+  int? selected;
+  bool showAnswer = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final questions = QUIZ_QUESTIONS[widget.category] ?? QUIZ_QUESTIONS['vocabulary']!;
+    final list = (questions as List);
+question = list[math.Random().nextInt(list.length)];
+  }
+
+  void handleAnswer() {
+    if (selected == null) return;
+    setState(() => showAnswer = true);
+    if (selected == question['answer']) {
+      Future.delayed(const Duration(milliseconds: 1500), () {
+        widget.onComplete(true);
+        Navigator.pop(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(question['question'], style: const TextStyle(fontSize: 15, color: Colors.black87)),
+            const SizedBox(height: 16),
+            ...List.generate((question['options'] as List).length, (idx) {
+              return GestureDetector(
+                onTap: showAnswer ? null : () => setState(() => selected = idx),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: selected == idx ? const Color(0xFF58CC02) : Colors.grey.shade300, width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                    color: showAnswer ? (idx == question['answer'] ? Colors.green.shade50 : selected == idx ? Colors.red.shade50 : Colors.white) : selected == idx ? Colors.grey.shade100 : Colors.white,
+                  ),
+                  child: Text((question['options'] as List)[idx], style: const TextStyle(fontSize: 14, color: Colors.black87)),
+                ),
+              );
+            }),
+            if (showAnswer)
+              Container(
+                margin: const EdgeInsets.only(top: 16),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(color: selected == question['answer'] ? Colors.green.shade50 : Colors.red.shade50, borderRadius: BorderRadius.circular(8)),
+                child: Column(
+                  children: [
+                    Text(selected == question['answer'] ? '正解！' : '不正解', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                    const SizedBox(height: 4),
+                    Text(question['explanation'], style: const TextStyle(fontSize: 13, color: Colors.black87)),
+                  ],
+                ),
+              ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: (selected == null || showAnswer) ? null : handleAnswer,
+                    style: ElevatedButton.styleFrom(backgroundColor: (selected == null || showAnswer) ? Colors.grey : const Color(0xFF58CC02)),
+                    child: const Text('回答する', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      widget.onComplete(true);
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.grey.shade600),
+                    child: const Text('スキップ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+// バッジポップアップ
+class BadgePopup extends StatelessWidget {
+  final String name;
+  final String icon;
+  const BadgePopup({super.key, required this.name, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    Future.delayed(const Duration(milliseconds: 2500), () {
+      if (context.mounted) Navigator.pop(context);
+    });
+    
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(colors: [Color(0xFFFFF9E6), Color(0xFFFFF3CC)]),
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: const Color(0xFFFFD700), width: 3),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 40)],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('BADGE UNLOCKED', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFFB8860B), letterSpacing: 2)),
+            const SizedBox(height: 8),
+            Text(icon, style: const TextStyle(fontSize: 72)),
+            const SizedBox(height: 10),
+            Text(name, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black)),
+          ],
         ),
       ),
     );
