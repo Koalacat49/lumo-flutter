@@ -457,6 +457,8 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
   List<Map<String, dynamic>> tasks = [];
   List<bool> tasksCompleted = [];
   List<bool> tasksExpanded = [];
+  int currentStreak = 0;
+DateTime? lastCompletedDate;
   int completedCount = 0;
 
  @override
@@ -541,6 +543,8 @@ JSONのみ返してください。
         'completedCount': completedCount,
         'tasksCompleted': tasksCompleted,
         'shownBadgeIds': shownBadgeIds,
+        'currentStreak': currentStreak,
+'lastCompletedDate': lastCompletedDate?.toIso8601String(),
       });
     } catch (e) {
       print('Save error: $e');
@@ -560,6 +564,10 @@ JSONのみ返してください。
             }
             completedCount = tasksCompleted.where((t) => t).length;
             shownBadgeIds = List<int>.from(data['shownBadgeIds'] ?? []);
+            currentStreak = data['currentStreak'] ?? 0;
+lastCompletedDate = data['lastCompletedDate'] != null 
+    ? DateTime.parse(data['lastCompletedDate']) 
+    : null;
           });
         }
       }
@@ -623,6 +631,7 @@ void checkNewBadges() {
           setState(() {
             tasksCompleted[i] = true;
             completedCount = tasksCompleted.where((t) => t).length;
+            _updateStreak();
           });
           print('completedCount: $completedCount');
           print('shownBadgeIds: $shownBadgeIds');
@@ -632,6 +641,35 @@ void checkNewBadges() {
       },
     ),
   );
+}
+void _updateStreak() {
+  final today = DateTime.now();
+  final todayDate = DateTime(today.year, today.month, today.day);
+  
+  if (lastCompletedDate == null) {
+    // 初回
+    currentStreak = 1;
+    lastCompletedDate = todayDate;
+  } else {
+    final lastDate = DateTime(
+      lastCompletedDate!.year,
+      lastCompletedDate!.month,
+      lastCompletedDate!.day,
+    );
+    final diff = todayDate.difference(lastDate).inDays;
+    
+    if (diff == 0) {
+      // 今日既に完了済み（何もしない）
+    } else if (diff == 1) {
+      // 連続
+      currentStreak++;
+      lastCompletedDate = todayDate;
+    } else {
+      // 途切れた
+      currentStreak = 1;
+      lastCompletedDate = todayDate;
+    }
+  }
 }
 
   @override
@@ -676,6 +714,12 @@ void checkNewBadges() {
       ),
       Row(
         children: [
+          if (currentStreak > 0) ...[
+  const Icon(Icons.local_fire_department, color: Colors.orange, size: 20),
+  const SizedBox(width: 4),
+  Text('$currentStreak日連続', style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+  const SizedBox(width: 12),
+],
           Text('$completedCount タスク完了', style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
           IconButton(
             icon: const Icon(Icons.refresh, color: Colors.white, size: 20),
