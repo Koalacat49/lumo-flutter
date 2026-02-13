@@ -534,23 +534,33 @@ JSONのみ返してください。
   }
 }
   Future<void> _saveData() async {
-    try {
-      await _firestore.collection('users').doc(userId).set({
-        'hasData': true,
-        'examDate': widget.examDate.toIso8601String(),
-        'personality': widget.personality,
-        'level': widget.level,
-        'completedCount': completedCount,
-        'tasksCompleted': tasksCompleted,
-        'shownBadgeIds': shownBadgeIds,
-        'currentStreak': currentStreak,
-'lastCompletedDate': lastCompletedDate?.toIso8601String(),
-      });
-    } catch (e) {
-      print('Save error: $e');
-    }
-  }
+  try {
+    await _firestore.collection('users').doc(userId).set({
+      'hasData': true,
+      'examDate': widget.examDate.toIso8601String(),
+      'personality': widget.personality,
+      'level': widget.level,
+      'completedCount': completedCount,
+      'tasksCompleted': tasksCompleted,
+      'shownBadgeIds': shownBadgeIds,
+      'currentStreak': currentStreak,
+      'lastCompletedDate': lastCompletedDate?.toIso8601String(),
+    });
+    
+    // 週間ランキング用
+    final now = DateTime.now();
+    final weekStart = now.subtract(Duration(days: now.weekday - 1));
+    final weekKey = '${weekStart.year}-W${weekStart.month.toString().padLeft(2, '0')}-${weekStart.day.toString().padLeft(2, '0')}';
 
+    await _firestore.collection('leaderboard').doc(userId).set({
+      'weekKey': weekKey,
+      'completedCount': completedCount,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  } catch (e) {
+    print('Save error: $e');
+  }
+}
   Future<void> _loadData() async {
     try {
       final doc = await _firestore.collection('users').doc(userId).get();
@@ -722,6 +732,15 @@ void _updateStreak() {
 ],
           Text('$completedCount タスク完了', style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
           IconButton(
+  icon: const Icon(Icons.leaderboard, color: Colors.white, size: 20),
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LeaderboardScreen()),
+    );
+  },
+),
+IconButton(
             icon: const Icon(Icons.refresh, color: Colors.white, size: 20),
             onPressed: () async {
               await _firestore.collection('users').doc(userId).delete();
@@ -984,6 +1003,60 @@ class BadgePopup extends StatelessWidget {
             Text(name, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black)),
           ],
         ),
+      ),
+    );
+  }
+}
+class LeaderboardScreen extends StatelessWidget {
+  const LeaderboardScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final weekStart = now.subtract(Duration(days: now.weekday - 1));
+    final weekKey = '${weekStart.year}-W${weekStart.month.toString().padLeft(2, '0')}-${weekStart.day.toString().padLeft(2, '0')}';
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('週間ランキング'),
+        backgroundColor: const Color(0xFF5DADE2),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('leaderboard')
+            .where('weekKey', isEqualTo: weekKey)
+            .orderBy('completedCount', descending: true)
+            .limit(50)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final docs = snapshot.data!.docs;
+          
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: docs.length,
+            itemBuilder: (context, i) {
+              final data = docs[i].data() as Map<String, dynamic>;
+              final count = data['completedCount'] ?? 0;
+              final rank = i + 1;
+              
+              return Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: rank <= 3 ? Colors.amber : Colors.grey,
+                    child: Text('$rank', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  title: Text('匿名ユーザー #${docs[i].id.substring(0, 8)}'),
+                  trailing: Text('$count タスク', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
