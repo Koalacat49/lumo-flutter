@@ -1472,6 +1472,11 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
   int currentStreak = 0;
   DateTime? lastCompletedDate;
   int completedCount = 0;
+  Map<String, Map<String, int>> quizStats = {
+    'vocabulary': {'correct': 0, 'total': 0},
+    'grammar': {'correct': 0, 'total': 0},
+    'reading': {'correct': 0, 'total': 0},
+  };
 
   @override
   void initState() {
@@ -1561,6 +1566,7 @@ JSONのみ返してください。
         'shownBadgeIds': shownBadgeIds,
         'currentStreak': currentStreak,
         'lastCompletedDate': lastCompletedDate?.toIso8601String(),
+        'quizStats': quizStats,
       });
 
       // 週間ランキング用
@@ -1596,6 +1602,17 @@ JSONのみ返してください。
             lastCompletedDate = data['lastCompletedDate'] != null
                 ? DateTime.parse(data['lastCompletedDate'])
                 : null;
+            if (data['quizStats'] != null) {
+              final stats = Map<String, dynamic>.from(data['quizStats']);
+              quizStats = {
+                'vocabulary': Map<String, int>.from(
+                    stats['vocabulary'] ?? {'correct': 0, 'total': 0}),
+                'grammar': Map<String, int>.from(
+                    stats['grammar'] ?? {'correct': 0, 'total': 0}),
+                'reading': Map<String, int>.from(
+                    stats['reading'] ?? {'correct': 0, 'total': 0}),
+              };
+            }
           });
         }
       }
@@ -1660,8 +1677,12 @@ JSONのみ返してください。
       context: context,
       builder: (context) => QuizModal(
         category: category,
-        onComplete: (success) {
+        onComplete: (success, cat) {
           if (success) {
+            // 正解率を記録
+            quizStats[cat]!['total'] = (quizStats[cat]!['total'] ?? 0) + 1;
+            quizStats[cat]!['correct'] = (quizStats[cat]!['correct'] ?? 0) + 1;
+
             setState(() {
               tasksCompleted[i] = true;
               completedCount = tasksCompleted.where((t) => t).length;
@@ -1671,6 +1692,10 @@ JSONのみ返してください。
             print('shownBadgeIds: $shownBadgeIds');
             _saveData();
             checkNewBadges();
+          } else {
+            // 不正解も記録
+            quizStats[cat]!['total'] = (quizStats[cat]!['total'] ?? 0) + 1;
+            _saveData();
           }
         },
       ),
@@ -1974,7 +1999,7 @@ JSONのみ返してください。
 // クイズモーダル
 class QuizModal extends StatefulWidget {
   final String category;
-  final Function(bool) onComplete;
+  final Function(bool success, String category) onComplete;
   const QuizModal(
       {super.key, required this.category, required this.onComplete});
   @override
@@ -2000,7 +2025,7 @@ class _QuizModalState extends State<QuizModal> {
     setState(() => showAnswer = true);
     if (selected == question['answer']) {
       Future.delayed(const Duration(milliseconds: 1500), () {
-        widget.onComplete(true);
+        widget.onComplete(true, widget.category);
         Navigator.pop(context);
       });
     }
@@ -2090,7 +2115,7 @@ class _QuizModalState extends State<QuizModal> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      widget.onComplete(true);
+                      widget.onComplete(true, widget.category);
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
