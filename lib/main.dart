@@ -1477,6 +1477,9 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
     'grammar': {'correct': 0, 'total': 0},
     'reading': {'correct': 0, 'total': 0},
   };
+  int todayCompleted = 0;
+  int weekCompleted = 0;
+  int monthCompleted = 0;
 
   @override
   void initState() {
@@ -1614,6 +1617,7 @@ JSONのみ返してください。
               };
             }
           });
+          _calculateProgress();
         }
       }
     } catch (e) {
@@ -1687,6 +1691,7 @@ JSONのみ返してください。
               tasksCompleted[i] = true;
               completedCount = tasksCompleted.where((t) => t).length;
               _updateStreak();
+              _calculateProgress();
             });
             print('completedCount: $completedCount');
             print('shownBadgeIds: $shownBadgeIds');
@@ -1730,6 +1735,67 @@ JSONのみ返してください。
         lastCompletedDate = todayDate;
       }
     }
+  }
+
+  void _calculateProgress() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    todayCompleted = 0;
+    weekCompleted = 0;
+    monthCompleted = 0;
+
+    // 今日・今週・今月のタスク完了数をカウント
+    // 注: 今は全タスクを見てるが、後で日付別に分けるべき
+    for (int i = 0; i < tasks.length && i < tasksCompleted.length; i++) {
+      if (tasksCompleted[i]) {
+        todayCompleted++;
+        weekCompleted++;
+        monthCompleted++;
+      }
+    }
+  }
+
+  Widget _buildCategoryButton(String label, String category, int count) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context); // カテゴリ選択を閉じる
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QuizSessionScreen(
+              category: category,
+              questionCount: count,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF5DADE2), Color(0xFF3498DB)],
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '$count問',
+              style: const TextStyle(color: Colors.white70, fontSize: 14),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -1869,6 +1935,126 @@ JSONのみ返してください。
                       ),
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              const SizedBox(height: 20),
+// 達成率表示
+              Container(
+                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: [
+                        const Text('今日',
+                            style: TextStyle(fontSize: 12, color: Colors.grey)),
+                        Text('$todayCompleted/${tasks.length}',
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF333333))),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Text('今週',
+                            style: TextStyle(fontSize: 12, color: Colors.grey)),
+                        Text('$weekCompleted/${tasks.length}',
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF333333))),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Text('今月',
+                            style: TextStyle(fontSize: 12, color: Colors.grey)),
+                        Text('$monthCompleted/${tasks.length} ',
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF333333))),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              // 今すぐ1問ボタン
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => Dialog(
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                              'カテゴリを選択',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF333333)),
+                            ),
+                            const SizedBox(height: 20),
+                            _buildCategoryButton('単語', 'vocabulary', 5),
+                            const SizedBox(height: 12),
+                            _buildCategoryButton('文法', 'grammar', 2),
+                            const SizedBox(height: 12),
+                            _buildCategoryButton('読解', 'reading', 2),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF5DADE2), Color(0xFF3498DB)],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.flash_on, color: Colors.white, size: 28),
+                      SizedBox(width: 12),
+                      Text(
+                        '今すぐ1問',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -2124,6 +2310,266 @@ class _QuizModalState extends State<QuizModal> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class QuizSessionScreen extends StatefulWidget {
+  final String category;
+  final int questionCount;
+
+  const QuizSessionScreen({
+    super.key,
+    required this.category,
+    required this.questionCount,
+  });
+
+  @override
+  State<QuizSessionScreen> createState() => _QuizSessionScreenState();
+}
+
+class _QuizSessionScreenState extends State<QuizSessionScreen> {
+  int currentIndex = 0;
+  int correctCount = 0;
+  List<Map<String, dynamic>> questions = [];
+  int? selectedOption;
+  bool showResult = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final allQuestions = QUIZ_QUESTIONS[widget.category] as List;
+    final shuffled = allQuestions.toList();
+    shuffled.shuffle();
+    questions = shuffled
+        .take(widget.questionCount)
+        .toList()
+        .cast<Map<String, dynamic>>();
+  }
+
+  void _nextQuestion(bool isCorrect) {
+    if (isCorrect) correctCount++;
+
+    if (currentIndex + 1 >= questions.length) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => QuizResultScreen(
+            category: widget.category,
+            total: questions.length,
+            correct: correctCount,
+          ),
+        ),
+      );
+    } else {
+      setState(() {
+        currentIndex++;
+        selectedOption = null;
+        showResult = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (questions.isEmpty)
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+
+    final question = questions[currentIndex];
+    final options = List<String>.from(question['options']);
+    final correctAnswer = question['answer'] as int;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: AppBar(
+        title: Text('${currentIndex + 1} / ${questions.length}'),
+        backgroundColor: const Color(0xFF5DADE2),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              question['question'],
+              style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF333333)),
+            ),
+            const SizedBox(height: 30),
+            ...List.generate(options.length, (i) {
+              final isSelected = selectedOption == i;
+              final isCorrect = i == correctAnswer;
+              Color? bgColor;
+              if (showResult) {
+                if (isCorrect)
+                  bgColor = Colors.green.shade100;
+                else if (isSelected) bgColor = Colors.red.shade100;
+              }
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: GestureDetector(
+                  onTap: showResult
+                      ? null
+                      : () {
+                          setState(() {
+                            selectedOption = i;
+                          });
+                        },
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: bgColor ??
+                          (isSelected ? Colors.blue.shade50 : Colors.white),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isSelected
+                            ? const Color(0xFF5DADE2)
+                            : Colors.grey.shade300,
+                        width: 2,
+                      ),
+                    ),
+                    child: Text(
+                      options[i],
+                      style: const TextStyle(
+                          fontSize: 16, color: Color(0xFF333333)),
+                    ),
+                  ),
+                ),
+              );
+            }),
+            const Spacer(),
+            if (!showResult && selectedOption != null)
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    showResult = true;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF5DADE2),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text('回答する',
+                    style: TextStyle(fontSize: 18, color: Colors.white)),
+              ),
+            if (showResult)
+              Column(
+                children: [
+                  Text(
+                    selectedOption == correctAnswer ? '正解！' : '不正解...',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: selectedOption == correctAnswer
+                          ? Colors.green
+                          : Colors.red,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () {
+                      _nextQuestion(selectedOption == correctAnswer);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF5DADE2),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text(
+                      currentIndex + 1 >= questions.length ? '結果を見る' : '次へ',
+                      style: const TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// クイズリザルト画面
+class QuizResultScreen extends StatelessWidget {
+  final String category;
+  final int total;
+  final int correct;
+
+  const QuizResultScreen({
+    super.key,
+    required this.category,
+    required this.total,
+    required this.correct,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final percentage = (correct / total * 100).round();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('結果'),
+        backgroundColor: const Color(0xFF5DADE2),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '$total問中$correct問正解！',
+              style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF333333)),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '正解率: $percentage%',
+              style: const TextStyle(fontSize: 24, color: Color(0xFF666666)),
+            ),
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32, vertical: 16),
+                  ),
+                  child: const Text('やめる', style: TextStyle(fontSize: 18)),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => QuizSessionScreen(
+                          category: category,
+                          questionCount: total,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF5DADE2),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32, vertical: 16),
+                  ),
+                  child: const Text('もう1セット！',
+                      style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ],
             ),
