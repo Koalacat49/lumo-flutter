@@ -1,0 +1,16 @@
+[33m2125228[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Add streak, leaderboard, 90 quiz questions, stats tracking, Android support, progress display, quick quiz feature
+[33m19bb591[m Add Android support (minSdk 23, AGP 8.2.1)
+[33md629a1a[m Add quiz statistics tracking (correct/total per category)
+[33md4d339f[m Expand quiz questions to 30 per category (vocabulary, grammar, reading)
+[33mb610095[m Add leaderboard feature (weekly ranking)
+[33m4ff596c[m Add streak feature (consecutive days tracking)
+[33mc1141d0[m Add task reason display with expand/collapse
+[33mceda5bc[m Switch AI to Groq, remove env files
+[33m00d2bbf[m Add quiz and badge system
+[33m7086ab2[m Base implementation: Firebase, diagnosis, mountain UI
+[33mc197acc[m レベル診断追加
+[33m0be6fb9[m 性格診断追加
+[33m1daa664[m 受験日入力画面完成
+[33m7568886[m Firebase追加
+[33m5eb6ccf[m 基本構造作成
+[33m325238b[m Flutter初期プロジェクト

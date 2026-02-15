@@ -2539,37 +2539,52 @@ class QuizResultScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                // やめるボタン
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey,
+                    backgroundColor: Colors.grey.shade600, // より落ち着いた灰色
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 16),
+                        horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  child: const Text('やめる', style: TextStyle(fontSize: 18)),
+                  child: const Text('やめる',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white)),
                 ),
+                // もう1回ボタン
                 ElevatedButton(
                   onPressed: () {
+                    // ここに具体的な再チャレンジのロジックを追加
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => QuizSessionScreen(
                           category: category,
-                          questionCount: total,
+                          questionCount: total, // 同じ問題数で再挑戦
                         ),
                       ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF5DADE2),
+                    backgroundColor: const Color(0xFF4CAF50), // より鮮やかな緑
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 16),
+                        horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  child: const Text('もう1セット！',
-                      style: TextStyle(fontSize: 18, color: Colors.white)),
+                  child: const Text('もう1回',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white)),
                 ),
               ],
             ),
