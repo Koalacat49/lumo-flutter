@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-// クイズ問題データ
+// 繧ｯ繧､繧ｺ蝠城｡後ョ繝ｼ繧ｿ
 const QUIZ_QUESTIONS = {
   'vocabulary': [
     {
@@ -15,7 +15,7 @@ const QUIZ_QUESTIONS = {
           'The board of directors will ____ the proposed merger at the next meeting.',
       'options': ['review', 'revise', 'reveal', 'resume'],
       'answer': 0,
-      'explanation': '「検討する、再調査する」という意味のreviewが文脈に最も適しています。'
+      'explanation': '縲梧､懆ｨ弱☆繧九∝・隱ｿ譟ｻ縺吶ｋ縲阪→縺・≧諢丞袖縺ｮreview縺梧枚閼医↓譛繧る←縺励※縺・∪縺吶・
     },
     {
       'question':
@@ -28,35 +28,35 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 0,
       'explanation':
-          '「払い戻し、精算」を意味するreimbursementsが、出張経費（travel expenses）という文脈に合います。'
+          '縲梧鴛縺・綾縺励∫ｲｾ邂励阪ｒ諢丞袖縺吶ｋreimbursements縺後∝・蠑ｵ邨瑚ｲｻ・・ravel expenses・峨→縺・≧譁・ц縺ｫ蜷医＞縺ｾ縺吶・
     },
     {
       'question':
           'The marketing team is looking for a more ____ approach to reach younger customers.',
       'options': ['reliable', 'innovative', 'vacant', 'manual'],
       'answer': 1,
-      'explanation': '「革新的な」という意味のinnovativeが、新しい顧客層へのアプローチとして適切です。'
+      'explanation': '縲碁擠譁ｰ逧・↑縲阪→縺・≧諢丞袖縺ｮinnovative縺後∵眠縺励＞鬘ｧ螳｢螻､縺ｸ縺ｮ繧｢繝励Ο繝ｼ繝√→縺励※驕ｩ蛻・〒縺吶・
     },
     {
       'question':
           'Employees are encouraged to ____ in the upcoming professional development workshop.',
       'options': ['collaborate', 'participate', 'contribute', 'distribute'],
       'answer': 1,
-      'explanation': 'participate inで「〜に参加する」という定型表現になります。'
+      'explanation': 'participate in縺ｧ縲後懊↓蜿ょ刈縺吶ｋ縲阪→縺・≧螳壼梛陦ｨ迴ｾ縺ｫ縺ｪ繧翫∪縺吶・
     },
     {
       'question':
           'The new software has significantly ____ our workflow and productivity.',
       'options': ['increased', 'expanded', 'enhanced', 'prolonged'],
       'answer': 2,
-      'explanation': '「（質や能力を）高める、向上させる」という意味のenhancedが、ワークフローや生産性に対して使われます。'
+      'explanation': '縲鯉ｼ郁ｳｪ繧・・蜉帙ｒ・蛾ｫ倥ａ繧九∝髄荳翫＆縺帙ｋ縲阪→縺・≧諢丞袖縺ｮenhanced縺後√Ρ繝ｼ繧ｯ繝輔Ο繝ｼ繧・函逕｣諤ｧ縺ｫ蟇ｾ縺励※菴ｿ繧上ｌ縺ｾ縺吶・
     },
     {
       'question':
           "The company's ____ performance has exceeded all expectations this fiscal year.",
       'options': ['financial', 'delicate', 'spacious', 'temporary'],
       'answer': 0,
-      'explanation': '「財務の、金銭的な」という意味のfinancialが、業績（performance）を修飾するのに適しています。'
+      'explanation': '縲瑚ｲ｡蜍吶・縲・≡驫ｭ逧・↑縲阪→縺・≧諢丞袖縺ｮfinancial縺後∵･ｭ邵ｾ・・erformance・峨ｒ菫ｮ鬟ｾ縺吶ｋ縺ｮ縺ｫ驕ｩ縺励※縺・∪縺吶・
     },
     {
       'question':
@@ -64,49 +64,49 @@ const QUIZ_QUESTIONS = {
       'options': ['notified', 'commended', 'persuaded', 'requested'],
       'answer': 1,
       'explanation':
-          '「褒められた、表彰された」という意味のcommendedが、貢献（contribution）に対する評価として適切です。'
+          '縲瑚､偵ａ繧峨ｌ縺溘∬｡ｨ蠖ｰ縺輔ｌ縺溘阪→縺・≧諢丞袖縺ｮcommended縺後∬ｲ｢迪ｮ・・ontribution・峨↓蟇ｾ縺吶ｋ隧穂ｾ｡縺ｨ縺励※驕ｩ蛻・〒縺吶・
     },
     {
       'question':
           'The ____ of the contract will be negotiated by the legal department next week.',
       'options': ['terms', 'margins', 'versions', 'portions'],
       'answer': 0,
-      'explanation': '「（契約などの）条件」を意味するtermsが契約（contract）の文脈でよく使われます。'
+      'explanation': '縲鯉ｼ亥･醍ｴ・↑縺ｩ縺ｮ・画擅莉ｶ縲阪ｒ諢丞袖縺吶ｋterms縺悟･醍ｴ・ｼ・ontract・峨・譁・ц縺ｧ繧医￥菴ｿ繧上ｌ縺ｾ縺吶・
     },
     {
       'question':
           'Our technical support team is available ____ to assist with any urgent issues.',
       'options': ['briefly', 'cautiously', 'round-the-clock', 'strictly'],
       'answer': 2,
-      'explanation': '「24時間体制で、休みなく」を意味するround-the-clockがサポートの可用性を表します。'
+      'explanation': '縲・4譎る俣菴灘宛縺ｧ縲∽ｼ代∩縺ｪ縺上阪ｒ諢丞袖縺吶ｋround-the-clock縺後し繝昴・繝医・蜿ｯ逕ｨ諤ｧ繧定｡ｨ縺励∪縺吶・
     },
     {
       'question':
           'The CEO decided to ____ the opening of the new branch due to budget constraints.',
       'options': ['postpone', 'predict', 'prevent', 'permit'],
       'answer': 0,
-      'explanation': '「延期する」を意味するpostponeが、予算の制約による開店の遅れを説明するのに適しています。'
+      'explanation': '縲悟ｻｶ譛溘☆繧九阪ｒ諢丞袖縺吶ｋpostpone縺後∽ｺ育ｮ励・蛻ｶ邏・↓繧医ｋ髢句ｺ励・驕・ｌ繧定ｪｬ譏弱☆繧九・縺ｫ驕ｩ縺励※縺・∪縺吶・
     },
     {
       'question':
           'All passengers are reminded to keep their personal ____ with them at all times.',
       'options': ['belongings', 'properties', 'ingredients', 'appliances'],
       'answer': 0,
-      'explanation': '「持ち物、所持品」を意味するbelongingsがアナウンスなどで一般的に使われます。'
+      'explanation': '縲梧戟縺｡迚ｩ縲∵園謖∝刀縲阪ｒ諢丞袖縺吶ｋbelongings縺後い繝翫え繝ｳ繧ｹ縺ｪ縺ｩ縺ｧ荳闊ｬ逧・↓菴ｿ繧上ｌ縺ｾ縺吶・
     },
     {
       'question':
           'The new security policy will ____ effect starting next Monday morning.',
       'options': ['take', 'make', 'give', 'do'],
       'answer': 0,
-      'explanation': 'take effectで「（法律や規則が）効力を発する、実施される」という慣用表現です。'
+      'explanation': 'take effect縺ｧ縲鯉ｼ域ｳ募ｾ九ｄ隕丞援縺鯉ｼ牙柑蜉帙ｒ逋ｺ縺吶ｋ縲∝ｮ滓命縺輔ｌ繧九阪→縺・≧諷｣逕ｨ陦ｨ迴ｾ縺ｧ縺吶・
     },
     {
       'question':
           'We need to find a ____ solution to this recurring technical problem.',
       'options': ['permanent', 'preliminary', 'previous', 'partial'],
       'answer': 0,
-      'explanation': '「永続的な、恒久的な」という意味のpermanentが、繰り返し起こる問題への対策として適切です。'
+      'explanation': '縲梧ｰｸ邯夂噪縺ｪ縲∵￡荵・噪縺ｪ縲阪→縺・≧諢丞袖縺ｮpermanent縺後∫ｹｰ繧願ｿ斐＠襍ｷ縺薙ｋ蝠城｡後∈縺ｮ蟇ｾ遲悶→縺励※驕ｩ蛻・〒縺吶・
     },
     {
       'question':
@@ -114,119 +114,119 @@ const QUIZ_QUESTIONS = {
       'options': ['comprehensive', 'competitive', 'confidential', 'compatible'],
       'answer': 0,
       'explanation':
-          '「包括的な、広範囲にわたる」という意味のcomprehensiveが、全体像（overview）の修飾に適しています。'
+          '縲悟桁諡ｬ逧・↑縲∝ｺ・ｯ・峇縺ｫ繧上◆繧九阪→縺・≧諢丞袖縺ｮcomprehensive縺後∝・菴灘ワ・・verview・峨・菫ｮ鬟ｾ縺ｫ驕ｩ縺励※縺・∪縺吶・
     },
     {
       'question':
           'Please ____ the attached document for more details regarding the itinerary.',
       'options': ['consult', 'conduct', 'convey', 'convert'],
       'answer': 0,
-      'explanation': '「（資料などを）参照する、調べる」という意味のconsultが適切です。'
+      'explanation': '縲鯉ｼ郁ｳ・侭縺ｪ縺ｩ繧抵ｼ牙盾辣ｧ縺吶ｋ縲∬ｪｿ縺ｹ繧九阪→縺・≧諢丞袖縺ｮconsult縺碁←蛻・〒縺吶・
     },
     {
       'question':
           'The hiring manager is looking for a candidate with ____ experience in international sales.',
       'options': ['substantial', 'suspicious', 'subjective', 'superficial'],
       'answer': 0,
-      'explanation': '「かなりの、相当な」という意味のsubstantialが、経験の豊富さを表す際に使われます。'
+      'explanation': '縲後°縺ｪ繧翫・縲∫嶌蠖薙↑縲阪→縺・≧諢丞袖縺ｮsubstantial縺後∫ｵ碁ｨ薙・雎雁ｯ後＆繧定｡ｨ縺咎圀縺ｫ菴ｿ繧上ｌ縺ｾ縺吶・
     },
     {
       'question':
           'The city council has ____ the proposal to build a new community center.',
       'options': ['approved', 'appealed', 'appeared', 'applied'],
       'answer': 0,
-      'explanation': '「承認する、認可する」という意味のapprovedが提案（proposal）に対する動詞として適切です。'
+      'explanation': '縲梧価隱阪☆繧九∬ｪ榊庄縺吶ｋ縲阪→縺・≧諢丞袖縺ｮapproved縺梧署譯茨ｼ・roposal・峨↓蟇ｾ縺吶ｋ蜍戊ｩ槭→縺励※驕ｩ蛻・〒縺吶・
     },
     {
       'question':
           'The workshop will help employees ____ their communication skills in professional settings.',
       'options': ['refine', 'repeat', 'restore', 'replace'],
       'answer': 0,
-      'explanation': '「（技術などを）磨く、洗練させる」という意味のrefineがスキル向上に適しています。'
+      'explanation': '縲鯉ｼ域橿陦薙↑縺ｩ繧抵ｼ臥｣ｨ縺上∵ｴ礼ｷｴ縺輔○繧九阪→縺・≧諢丞袖縺ｮrefine縺後せ繧ｭ繝ｫ蜷台ｸ翫↓驕ｩ縺励※縺・∪縺吶・
     },
     {
       'question':
           "Mr. Kim's ____ to the project was crucial to its successful completion.",
       'options': ['commitment', 'compliance', 'compliment', 'component'],
       'answer': 0,
-      'explanation': '「献身、熱心な取り組み」を意味するcommitmentが、プロジェクトの成功要因として適切です。'
+      'explanation': '縲檎鍵霄ｫ縲∫・蠢・↑蜿悶ｊ邨・∩縲阪ｒ諢丞袖縺吶ｋcommitment縺後√・繝ｭ繧ｸ繧ｧ繧ｯ繝医・謌仙粥隕∝屏縺ｨ縺励※驕ｩ蛻・〒縺吶・
     },
     {
       'question':
           'The hotel offers a ____ shuttle service to and from the airport for all guests.',
       'options': ['complimentary', 'mandatory', 'voluntary', 'secondary'],
       'answer': 0,
-      'explanation': '「無料の、優待の」という意味のcomplimentaryがサービスの文脈で頻出します。'
+      'explanation': '縲檎┌譁吶・縲∝━蠕・・縲阪→縺・≧諢丞袖縺ｮcomplimentary縺後し繝ｼ繝薙せ縺ｮ譁・ц縺ｧ鬆ｻ蜃ｺ縺励∪縺吶・
     },
     {
       'question':
           'The survey results indicate that customer ____ has improved significantly this year.',
       'options': ['satisfaction', 'calculation', 'preparation', 'obligation'],
       'answer': 0,
-      'explanation': '「満足（度）」を意味するsatisfactionが、調査結果（survey results）の内容として適切です。'
+      'explanation': '縲梧ｺ雜ｳ・亥ｺｦ・峨阪ｒ諢丞袖縺吶ｋsatisfaction縺後∬ｪｿ譟ｻ邨先棡・・urvey results・峨・蜀・ｮｹ縺ｨ縺励※驕ｩ蛻・〒縺吶・
     },
     {
       'question':
           'All employees must ____ with the new safety regulations to avoid potential fines.',
       'options': ['comply', 'rely', 'apply', 'supply'],
       'answer': 0,
-      'explanation': 'comply withで「（規則や法律に）従う、遵守する」という重要なビジネス表現です。'
+      'explanation': 'comply with縺ｧ縲鯉ｼ郁ｦ丞援繧・ｳ募ｾ九↓・牙ｾ薙≧縲・・螳医☆繧九阪→縺・≧驥崎ｦ√↑繝薙ず繝阪せ陦ｨ迴ｾ縺ｧ縺吶・
     },
     {
       'question':
           'The company is seeking to ____ its operations into the emerging Southeast Asian market.',
       'options': ['expand', 'exceed', 'exert', 'expel'],
       'answer': 0,
-      'explanation': '「（事業などを）拡大する、広げる」を意味するexpandがビジネスの成長の文脈に適しています。'
+      'explanation': '縲鯉ｼ井ｺ区･ｭ縺ｪ縺ｩ繧抵ｼ画僑螟ｧ縺吶ｋ縲∝ｺ・￡繧九阪ｒ諢丞袖縺吶ｋexpand縺後ン繧ｸ繝阪せ縺ｮ謌宣聞縺ｮ譁・ц縺ｫ驕ｩ縺励※縺・∪縺吶・
     },
     {
       'question':
           'The ____ of the new office building is expected to be completed by December.',
       'options': ['construction', 'consumption', 'connection', 'conversation'],
       'answer': 0,
-      'explanation': '「建設」を意味するconstructionが、建物（building）が完成することの説明として適切です。'
+      'explanation': '縲悟ｻｺ險ｭ縲阪ｒ諢丞袖縺吶ｋconstruction縺後∝ｻｺ迚ｩ・・uilding・峨′螳梧・縺吶ｋ縺薙→縺ｮ隱ｬ譏弱→縺励※驕ｩ蛻・〒縺吶・
     },
     {
       'question':
           'Please ____ that all lights and electronic devices are turned off before leaving.',
       'options': ['ensure', 'endure', 'enlarge', 'enrich'],
       'answer': 0,
-      'explanation': '「〜を確実にする、確認する」という意味のensureが、注意喚起の文脈で使われます。'
+      'explanation': '縲後懊ｒ遒ｺ螳溘↓縺吶ｋ縲∫｢ｺ隱阪☆繧九阪→縺・≧諢丞袖縺ｮensure縺後∵ｳｨ諢丞繭襍ｷ縺ｮ譁・ц縺ｧ菴ｿ繧上ｌ縺ｾ縺吶・
     },
     {
       'question':
           'The primary ____ of the meeting is to discuss the budget for the next quarter.',
       'options': ['purpose', 'portion', 'process', 'purchase'],
       'answer': 0,
-      'explanation': '「目的」を意味するpurposeが、会議の議題を説明するのに適しています。'
+      'explanation': '縲檎岼逧・阪ｒ諢丞袖縺吶ｋpurpose縺後∽ｼ夊ｭｰ縺ｮ隴ｰ鬘後ｒ隱ｬ譏弱☆繧九・縺ｫ驕ｩ縺励※縺・∪縺吶・
     },
     {
       'question':
           'The maintenance team is currently ____ the faulty ventilation system.',
       'options': ['repairing', 'repeating', 'regarding', 'revealing'],
       'answer': 0,
-      'explanation': '「修理する」を意味するrepairingが、故障した（faulty）システムへの対処として適切です。'
+      'explanation': '縲御ｿｮ逅・☆繧九阪ｒ諢丞袖縺吶ｋrepairing縺後∵腐髫懊＠縺滂ｼ・aulty・峨す繧ｹ繝・Β縺ｸ縺ｮ蟇ｾ蜃ｦ縺ｨ縺励※驕ｩ蛻・〒縺吶・
     },
     {
       'question':
           'The new social media strategy has proven to be highly ____ in increasing brand awareness.',
       'options': ['effective', 'effort', 'effect', 'efficiently'],
       'answer': 0,
-      'explanation': '「効果的な」を意味する形容詞effectiveが、戦略（strategy）の評価として適しています。'
+      'explanation': '縲悟柑譫懃噪縺ｪ縲阪ｒ諢丞袖縺吶ｋ蠖｢螳ｹ隧枡ffective縺後∵姶逡･・・trategy・峨・隧穂ｾ｡縺ｨ縺励※驕ｩ縺励※縺・∪縺吶・
     },
     {
       'question':
           '____ her hard work and dedication, Ms. Sato was promoted to senior manager.',
       'options': ['Due to', 'Regardless of', 'Instead of', 'As for'],
       'answer': 0,
-      'explanation': '「〜のために、〜が原因で」という理由を表すDue toが昇進の理由を説明するのに適しています。'
+      'explanation': '縲後懊・縺溘ａ縺ｫ縲√懊′蜴溷屏縺ｧ縲阪→縺・≧逅・罰繧定｡ｨ縺僖ue to縺梧・騾ｲ縺ｮ逅・罰繧定ｪｬ譏弱☆繧九・縺ｫ驕ｩ縺励※縺・∪縺吶・
     },
     {
       'question':
           'The guest speaker gave an ____ presentation on the future of renewable energy.',
       'options': ['insightful', 'internal', 'inferior', 'initial'],
       'answer': 0,
-      'explanation': '「洞察力のある、非常に有益な」という意味のinsightfulが、プレゼンテーションの評価として適切です。'
+      'explanation': '縲梧ｴ槫ｯ溷鴨縺ｮ縺ゅｋ縲・撼蟶ｸ縺ｫ譛臥寢縺ｪ縲阪→縺・≧諢丞袖縺ｮinsightful縺後√・繝ｬ繧ｼ繝ｳ繝・・繧ｷ繝ｧ繝ｳ縺ｮ隧穂ｾ｡縺ｨ縺励※驕ｩ蛻・〒縺吶・
     },
   ],
   'grammar': [
@@ -236,7 +236,7 @@ const QUIZ_QUESTIONS = {
       'options': ['interest', 'interesting', 'interested', 'interestingly'],
       'answer': 2,
       'explanation':
-          'be interested in（〜に興味がある）という形になります。人が主語の場合は、過去分詞形interested（興味を持っている状態）を使います。'
+          'be interested in・医懊↓闊亥袖縺後≠繧具ｼ峨→縺・≧蠖｢縺ｫ縺ｪ繧翫∪縺吶ゆｺｺ縺御ｸｻ隱槭・蝣ｴ蜷医・縲・℃蜴ｻ蛻・ｩ槫ｽ｢interested・郁・蜻ｳ繧呈戟縺｣縺ｦ縺・ｋ迥ｶ諷具ｼ峨ｒ菴ｿ縺・∪縺吶・
     },
     {
       'question':
@@ -244,21 +244,21 @@ const QUIZ_QUESTIONS = {
       'options': ['Despite', 'Although', 'Nevertheless', 'Even though'],
       'answer': 0,
       'explanation':
-          '空所後のthe inclement weatherは名詞句なので、前置詞のDespite（〜にもかかわらず）が適切です。AlthoughとEven thoughは接続詞なので後ろにS+Vが続きます。'
+          '遨ｺ謇蠕後・the inclement weather縺ｯ蜷崎ｩ槫唱縺ｪ縺ｮ縺ｧ縲∝燕鄂ｮ隧槭・Despite・医懊↓繧ゅ°縺九ｏ繧峨★・峨′驕ｩ蛻・〒縺吶・lthough縺ｨEven though縺ｯ謗･邯夊ｩ槭↑縺ｮ縺ｧ蠕後ｍ縺ｫS+V縺檎ｶ壹″縺ｾ縺吶・
     },
     {
       'question':
           'Ms. Tanaka ____ for this law firm for over ten years before she was promoted to partner.',
       'options': ['works', 'is working', 'has worked', 'had worked'],
       'answer': 3,
-      'explanation': '過去のある時点（was promoted）よりも前の期間を表すため、過去完了形のhad workedが適切です。'
+      'explanation': '驕主悉縺ｮ縺ゅｋ譎らせ・・as promoted・峨ｈ繧翫ｂ蜑阪・譛滄俣繧定｡ｨ縺吶◆繧√・℃蜴ｻ螳御ｺ・ｽ｢縺ｮhad worked縺碁←蛻・〒縺吶・
     },
     {
       'question':
           'The final report must ____ to the department head by the end of the business day.',
       'options': ['submit', 'be submitted', 'submitting', 'be submitting'],
       'answer': 1,
-      'explanation': '主語のThe final reportは提出される側なので、受動態のbe submittedが適切です。'
+      'explanation': '荳ｻ隱槭・The final report縺ｯ謠仙・縺輔ｌ繧句・縺ｪ縺ｮ縺ｧ縲∝女蜍墓・縺ｮbe submitted縺碁←蛻・〒縺吶・
     },
     {
       'question':
@@ -266,14 +266,14 @@ const QUIZ_QUESTIONS = {
       'options': ['who', 'which', 'whom', 'whose'],
       'answer': 0,
       'explanation':
-          '空所の後ろに動詞fixedが続いているため、先行詞The technician（人）を修飾する主格の関係代名詞whoが必要です。'
+          '遨ｺ謇縺ｮ蠕後ｍ縺ｫ蜍戊ｩ枅ixed縺檎ｶ壹＞縺ｦ縺・ｋ縺溘ａ縲∝・陦瑚ｩ杁he technician・井ｺｺ・峨ｒ菫ｮ鬟ｾ縺吶ｋ荳ｻ譬ｼ縺ｮ髢｢菫ゆｻ｣蜷崎ｩ檜ho縺悟ｿ・ｦ√〒縺吶・
     },
     {
       'question':
           'The CEO decided to prepare the keynote speech for the annual conference ____.',
       'options': ['he', 'his', 'him', 'himself'],
       'answer': 3,
-      'explanation': '「CEO自身で」という意味にするため、再帰代名詞のhimselfを強調として使います。'
+      'explanation': '縲靴EO閾ｪ霄ｫ縺ｧ縲阪→縺・≧諢丞袖縺ｫ縺吶ｋ縺溘ａ縲∝・蟶ｰ莉｣蜷崎ｩ槭・himself繧貞ｼｷ隱ｿ縺ｨ縺励※菴ｿ縺・∪縺吶・
     },
     {
       'question':
@@ -281,14 +281,14 @@ const QUIZ_QUESTIONS = {
       'options': ['hard', 'hardly', 'hardness', 'hardest'],
       'answer': 0,
       'explanation':
-          '「一生懸命に」という意味の副詞hardが適切です。hardlyは「ほとんど〜ない」という否定の意味になってしまいます。'
+          '縲御ｸ逕滓・蜻ｽ縺ｫ縲阪→縺・≧諢丞袖縺ｮ蜑ｯ隧柯ard縺碁←蛻・〒縺吶Ｉardly縺ｯ縲後⊇縺ｨ繧薙←縲懊↑縺・阪→縺・≧蜷ｦ螳壹・諢丞袖縺ｫ縺ｪ縺｣縺ｦ縺励∪縺・∪縺吶・
     },
     {
       'question':
           'The strategic planning meeting is scheduled to take place ____ Monday morning at 9:00 A.M.',
       'options': ['in', 'at', 'on', 'by'],
       'answer': 2,
-      'explanation': '曜日や特定の日付（Monday morning）の前には前置詞onを使います。'
+      'explanation': '譖懈律繧・音螳壹・譌･莉假ｼ・onday morning・峨・蜑阪↓縺ｯ蜑咲ｽｮ隧柞n繧剃ｽｿ縺・∪縺吶・
     },
     {
       'question':
@@ -296,14 +296,14 @@ const QUIZ_QUESTIONS = {
       'options': ['am', 'was', 'were', 'been'],
       'answer': 2,
       'explanation':
-          '仮定法過去の文（If + 主語 + 過去形, 主語 + would + 原形）です。be動詞は主語に関わらずwereを用いるのが一般的です。'
+          '莉ｮ螳壽ｳ暮℃蜴ｻ縺ｮ譁・ｼ・f + 荳ｻ隱・+ 驕主悉蠖｢, 荳ｻ隱・+ would + 蜴溷ｽ｢・峨〒縺吶Ｃe蜍戊ｩ槭・荳ｻ隱槭↓髢｢繧上ｉ縺嗹ere繧堤畑縺・ｋ縺ｮ縺御ｸ闊ｬ逧・〒縺吶・
     },
     {
       'question':
           'The management team suggested ____ the merger until the next fiscal quarter.',
       'options': ['postpone', 'to postpone', 'postponing', 'postponed'],
       'answer': 2,
-      'explanation': 'suggestは動名詞（-ing）を目的語に取る動詞です。to不定詞は取りません。'
+      'explanation': 'suggest縺ｯ蜍募錐隧橸ｼ・ing・峨ｒ逶ｮ逧・ｪ槭↓蜿悶ｋ蜍戊ｩ槭〒縺吶Ｕo荳榊ｮ夊ｩ槭・蜿悶ｊ縺ｾ縺帙ｓ縲・
     },
     {
       'question':
@@ -311,21 +311,21 @@ const QUIZ_QUESTIONS = {
       'options': ['follow', 'follows', 'followed', 'following'],
       'answer': 0,
       'explanation':
-          'essential（不可欠な）などの形容詞に続くthat節内では、動詞は原形（またはshould + 原形）になります（仮定法現在）。'
+          'essential・井ｸ榊庄谺縺ｪ・峨↑縺ｩ縺ｮ蠖｢螳ｹ隧槭↓邯壹￥that遽蜀・〒縺ｯ縲∝虚隧槭・蜴溷ｽ｢・医∪縺溘・should + 蜴溷ｽ｢・峨↓縺ｪ繧翫∪縺呻ｼ井ｻｮ螳壽ｳ慕樟蝨ｨ・峨・
     },
     {
       'question':
           "This year's quarterly profits are significantly ____ than those of the previous year.",
       'options': ['high', 'higher', 'highest', 'highly'],
       'answer': 1,
-      'explanation': '比較対象を表すthanがあるため、比較級のhigherが適切です。'
+      'explanation': '豈碑ｼ・ｯｾ雎｡繧定｡ｨ縺冲han縺後≠繧九◆繧√∵ｯ碑ｼ・ｴ壹・higher縺碁←蛻・〒縺吶・
     },
     {
       'question':
           'We will have the local contractor ____ the air conditioning system in the warehouse.',
       'options': ['repair', 'repairs', 'repaired', 'to repair'],
       'answer': 0,
-      'explanation': 'have + 人 + 原形不定詞で「（人）に〜してもらう（使役）」という構造になります。'
+      'explanation': 'have + 莠ｺ + 蜴溷ｽ｢荳榊ｮ夊ｩ槭〒縲鯉ｼ井ｺｺ・峨↓縲懊＠縺ｦ繧ゅｉ縺・ｼ井ｽｿ蠖ｹ・峨阪→縺・≧讒矩縺ｫ縺ｪ繧翫∪縺吶・
     },
     {
       'question':
@@ -338,28 +338,28 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 2,
       'explanation':
-          'By the time + 現在形（未来の代用）がある場合、未来のある時点での完了を表す未来完了形（will have finished）を使います。'
+          'By the time + 迴ｾ蝨ｨ蠖｢・域悴譚･縺ｮ莉｣逕ｨ・峨′縺ゅｋ蝣ｴ蜷医∵悴譚･縺ｮ縺ゅｋ譎らせ縺ｧ縺ｮ螳御ｺ・ｒ陦ｨ縺呎悴譚･螳御ｺ・ｽ｢・・ill have finished・峨ｒ菴ｿ縺・∪縺吶・
     },
     {
       'question':
           'The cost of raw materials has ____ significantly over the past six months.',
       'options': ['rose', 'risen', 'raised', 'raising'],
       'answer': 1,
-      'explanation': '「上がる」という自動詞riseの過去分詞形risenが適切です。raiseは「〜を上げる」という他動詞です。'
+      'explanation': '縲御ｸ翫′繧九阪→縺・≧閾ｪ蜍戊ｩ柮ise縺ｮ驕主悉蛻・ｩ槫ｽ｢risen縺碁←蛻・〒縺吶Ｓaise縺ｯ縲後懊ｒ荳翫￡繧九阪→縺・≧莉門虚隧槭〒縺吶・
     },
     {
       'question':
           'Neither the department head ____ the staff members were informed about the office relocation.',
       'options': ['or', 'and', 'nor', 'but'],
       'answer': 2,
-      'explanation': 'Neither A nor B（AもBも〜ない）という相関接続詞の定型表現です。'
+      'explanation': 'Neither A nor B・・繧・繧ゅ懊↑縺・ｼ峨→縺・≧逶ｸ髢｢謗･邯夊ｩ槭・螳壼梛陦ｨ迴ｾ縺ｧ縺吶・
     },
     {
       'question':
           'Please note that the responsibility for maintaining the office equipment is ____.',
       'options': ['your', 'you', 'yours', 'yourself'],
       'answer': 2,
-      'explanation': '「あなたのもの（あなたの責任）」という意味の所有代名詞yoursが必要です。yourは後ろに名詞が必要です。'
+      'explanation': '縲後≠縺ｪ縺溘・繧ゅ・・医≠縺ｪ縺溘・雋ｬ莉ｻ・峨阪→縺・≧諢丞袖縺ｮ謇譛我ｻ｣蜷崎ｩ框ours縺悟ｿ・ｦ√〒縺吶Ｚour縺ｯ蠕後ｍ縺ｫ蜷崎ｩ槭′蠢・ｦ√〒縺吶・
     },
     {
       'question':
@@ -367,14 +367,14 @@ const QUIZ_QUESTIONS = {
       'options': ['among', 'between', 'from', 'against'],
       'answer': 1,
       'explanation':
-          'between A and B（AとBの間）という表現が、2つの場所（subway stationとbus terminal）の間に位置することを示します。'
+          'between A and B・・縺ｨB縺ｮ髢難ｼ峨→縺・≧陦ｨ迴ｾ縺後・縺､縺ｮ蝣ｴ謇・・ubway station縺ｨbus terminal・峨・髢薙↓菴咲ｽｮ縺吶ｋ縺薙→繧堤､ｺ縺励∪縺吶・
     },
     {
       'question':
           '____ by the sudden drop in stock prices, the investors called for an emergency meeting.',
       'options': ['Surprising', 'Surprise', 'Surprised', 'To surprise'],
       'answer': 2,
-      'explanation': '分詞構文です。投資家が「驚かされた」という受動の意味になるため、過去分詞Surprisedで始めます。'
+      'explanation': '蛻・ｩ樊ｧ区枚縺ｧ縺吶よ兜雉・ｮｶ縺後碁ｩ壹°縺輔ｌ縺溘阪→縺・≧蜿怜虚縺ｮ諢丞袖縺ｫ縺ｪ繧九◆繧√・℃蜴ｻ蛻・ｩ朶urprised縺ｧ蟋九ａ縺ｾ縺吶・
     },
     {
       'question':
@@ -382,49 +382,49 @@ const QUIZ_QUESTIONS = {
       'options': ['a', 'an', 'the', 'any'],
       'answer': 0,
       'explanation':
-          'honorは数えられる名詞として扱われ、ここでは「一つの光栄なこと」として不定冠詞aを用います（greatの頭文字が子音のため）。'
+          'honor縺ｯ謨ｰ縺医ｉ繧後ｋ蜷崎ｩ槭→縺励※謇ｱ繧上ｌ縲√％縺薙〒縺ｯ縲御ｸ縺､縺ｮ蜈画・↑縺薙→縲阪→縺励※荳榊ｮ壼・隧杪繧堤畑縺・∪縺呻ｼ・reat縺ｮ鬆ｭ譁・ｭ励′蟄宣浹縺ｮ縺溘ａ・峨・
     },
     {
       'question':
           'The company purchased new ____ for the laboratory to improve testing efficiency.',
       'options': ['equipments', 'equipment', 'equipping', 'equipped'],
       'answer': 1,
-      'explanation': 'equipmentは不可算名詞（数えられない名詞）なので、複数形のsをつけずに用います。'
+      'explanation': 'equipment縺ｯ荳榊庄邂怜錐隧橸ｼ域焚縺医ｉ繧後↑縺・錐隧橸ｼ峨↑縺ｮ縺ｧ縲∬､・焚蠖｢縺ｮs繧偵▽縺代★縺ｫ逕ｨ縺・∪縺吶・
     },
     {
       'question':
           'The executive assistant is known for organizing international conferences very ____.',
       'options': ['good', 'well', 'best', 'better'],
       'answer': 1,
-      'explanation': '動詞organizingを修飾するためには副詞のwellが必要です。goodは形容詞です。'
+      'explanation': '蜍戊ｩ柞rganizing繧剃ｿｮ鬟ｾ縺吶ｋ縺溘ａ縺ｫ縺ｯ蜑ｯ隧槭・well縺悟ｿ・ｦ√〒縺吶Ｈood縺ｯ蠖｢螳ｹ隧槭〒縺吶・
     },
     {
       'question':
           'The regional office is located in a district ____ several major tech companies are based.',
       'options': ['which', 'where', 'what', 'whose'],
       'answer': 1,
-      'explanation': '先行詞a district（場所）を修飾し、後ろに完全な文が続いているため、関係副詞whereが適切です。'
+      'explanation': '蜈郁｡瑚ｩ杪 district・亥ｴ謇・峨ｒ菫ｮ鬟ｾ縺励∝ｾ後ｍ縺ｫ螳悟・縺ｪ譁・′邯壹＞縺ｦ縺・ｋ縺溘ａ縲・未菫ょ憶隧檜here縺碁←蛻・〒縺吶・
     },
     {
       'question':
           'Mr. Lopez ____ to Europe three times this year to negotiate the distribution contracts.',
       'options': ['goes', 'is going', 'has been', 'was'],
       'answer': 2,
-      'explanation': '「今年3回行っている（経験）」を表すため、現在完了形のhas beenが適切です。'
+      'explanation': '縲御ｻ雁ｹｴ3蝗櫁｡後▲縺ｦ縺・ｋ・育ｵ碁ｨ難ｼ峨阪ｒ陦ｨ縺吶◆繧√∫樟蝨ｨ螳御ｺ・ｽ｢縺ｮhas been縺碁←蛻・〒縺吶・
     },
     {
       'question':
           'The primary objective of this seminar is ____ employees on the new software features.',
       'options': ['train', 'to train', 'trained', 'trains'],
       'answer': 1,
-      'explanation': '「目的は〜することです」という補語の役割を果たす不定詞to trainが適切です。'
+      'explanation': '縲檎岼逧・・縲懊☆繧九％縺ｨ縺ｧ縺吶阪→縺・≧陬懆ｪ槭・蠖ｹ蜑ｲ繧呈棡縺溘☆荳榊ｮ夊ｩ柎o train縺碁←蛻・〒縺吶・
     },
     {
       'question':
           'The public relations officer is responsible ____ handling all media inquiries.',
       'options': ['to', 'with', 'for', 'in'],
       'answer': 2,
-      'explanation': 'be responsible for（〜に責任がある、〜を担当している）という重要熟語です。'
+      'explanation': 'be responsible for・医懊↓雋ｬ莉ｻ縺後≠繧九√懊ｒ諡・ｽ薙＠縺ｦ縺・ｋ・峨→縺・≧驥崎ｦ∫・隱槭〒縺吶・
     },
     {
       'question':
@@ -432,28 +432,28 @@ const QUIZ_QUESTIONS = {
       'options': ['during', 'until', 'while', 'since'],
       'answer': 1,
       'explanation':
-          '「〜までずっと（継続）」という意味の接続詞untilが適切です。duringは前置詞なので後ろにS+Vは置けません。'
+          '縲後懊∪縺ｧ縺壹▲縺ｨ・育ｶ咏ｶ夲ｼ峨阪→縺・≧諢丞袖縺ｮ謗･邯夊ｩ柆ntil縺碁←蛻・〒縺吶Ｅuring縺ｯ蜑咲ｽｮ隧槭↑縺ｮ縺ｧ蠕後ｍ縺ｫS+V縺ｯ鄂ｮ縺代∪縺帙ｓ縲・
     },
     {
       'question':
           'The ultimate ____ of the project depends on the cooperation between all departments.',
       'options': ['succeed', 'success', 'successful', 'successfully'],
       'answer': 1,
-      'explanation': '冠詞Theと前置詞ofの間には名詞が必要です。success（成功）が適切です。'
+      'explanation': '蜀隧杁he縺ｨ蜑咲ｽｮ隧柞f縺ｮ髢薙↓縺ｯ蜷崎ｩ槭′蠢・ｦ√〒縺吶Ｔuccess・域・蜉滂ｼ峨′驕ｩ蛻・〒縺吶・
     },
     {
       'question':
           'Employees ____ smoke within 20 meters of the building\'s main entrance.',
       'options': ['must not', 'do not have to', 'might not', 'not'],
       'answer': 0,
-      'explanation': '「〜してはいけない（禁止）」という意味のmust notがビジネスルールの文脈で適切です。'
+      'explanation': '縲後懊＠縺ｦ縺ｯ縺・￠縺ｪ縺・ｼ育ｦ∵ｭ｢・峨阪→縺・≧諢丞袖縺ｮmust not縺後ン繧ｸ繝阪せ繝ｫ繝ｼ繝ｫ縺ｮ譁・ц縺ｧ驕ｩ蛻・〒縺吶・
     },
     {
       'question':
           'This is the ____ expensive marketing campaign the company has ever launched.',
       'options': ['more', 'most', 'much', 'mostly'],
       'answer': 1,
-      'explanation': 'ever（これまでで）という表現があるため、最上級のthe most expensiveが適切です。'
+      'explanation': 'ever・医％繧後∪縺ｧ縺ｧ・峨→縺・≧陦ｨ迴ｾ縺後≠繧九◆繧√∵怙荳顔ｴ壹・the most expensive縺碁←蛻・〒縺吶・
     },
   ],
   'reading': [
@@ -467,7 +467,7 @@ const QUIZ_QUESTIONS = {
         'Wednesday at 10 AM'
       ],
       'answer': 3,
-      'explanation': '本文に「moved to Wednesday at 10 AM（水曜の午前10時に変更された）」とあります。'
+      'explanation': '譛ｬ譁・↓縲稽oved to Wednesday at 10 AM・域ｰｴ譖懊・蜊亥燕10譎ゅ↓螟画峩縺輔ｌ縺滂ｼ峨阪→縺ゅｊ縺ｾ縺吶・
     },
     {
       'question':
@@ -479,7 +479,7 @@ const QUIZ_QUESTIONS = {
         'For a renovation'
       ],
       'answer': 1,
-      'explanation': '「for the Labor Day holiday（労働者の日の祝日のため）」と閉鎖の理由が述べられています。'
+      'explanation': '縲掲or the Labor Day holiday・亥感蜒崎・・譌･縺ｮ逾晄律縺ｮ縺溘ａ・峨阪→髢蛾事縺ｮ逅・罰縺瑚ｿｰ縺ｹ繧峨ｌ縺ｦ縺・∪縺吶・
     },
     {
       'question':
@@ -492,7 +492,7 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 2,
       'explanation':
-          '「proficiency in Adobe Creative Suite（Adobeツールの習熟）」が要件として挙げられています。'
+          '縲継roficiency in Adobe Creative Suite・・dobe繝・・繝ｫ縺ｮ鄙堤・・峨阪′隕∽ｻｶ縺ｨ縺励※謖吶￡繧峨ｌ縺ｦ縺・∪縺吶・
     },
     {
       'question':
@@ -500,7 +500,7 @@ const QUIZ_QUESTIONS = {
       'options': ['1-2 days', '3-5 days', '7-10 days', 'Two weeks'],
       'answer': 1,
       'explanation':
-          '「arrive within 3-5 business days（3〜5営業日以内に到着予定）」と記載されています。'
+          '縲径rrive within 3-5 business days・・縲・蝟ｶ讌ｭ譌･莉･蜀・↓蛻ｰ逹莠亥ｮ夲ｼ峨阪→險倩ｼ峨＆繧後※縺・∪縺吶・
     },
     {
       'question':
@@ -513,14 +513,14 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 1,
       'explanation':
-          '「To reduce electricity costs（電気代を削減するため）」、つまり省エネ（save energy）が目的です。'
+          '縲卦o reduce electricity costs・磯崕豌嶺ｻ｣繧貞炎貂帙☆繧九◆繧・ｼ峨阪√▽縺ｾ繧顔怐繧ｨ繝搾ｼ・ave energy・峨′逶ｮ逧・〒縺吶・
     },
     {
       'question':
           '[Product Info] The X-2000 vacuum cleaner comes with a 2-year warranty covering all parts and labor. Return it within 30 days for a full refund. Question: How long is the warranty period?',
       'options': ['30 days', '1 year', '2 years', '5 years'],
       'answer': 2,
-      'explanation': '「a 2-year warranty（2年間の保証）」と明記されています。'
+      'explanation': '縲径 2-year warranty・・蟷ｴ髢薙・菫晁ｨｼ・峨阪→譏手ｨ倥＆繧後※縺・∪縺吶・
     },
     {
       'question':
@@ -533,7 +533,7 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 2,
       'explanation':
-          '「to expand its cloud computing services（クラウドサービスを拡大するため）」と目的が書かれています。'
+          '縲荊o expand its cloud computing services・医け繝ｩ繧ｦ繝峨し繝ｼ繝薙せ繧呈僑螟ｧ縺吶ｋ縺溘ａ・峨阪→逶ｮ逧・′譖ｸ縺九ｌ縺ｦ縺・∪縺吶・
     },
     {
       'question':
@@ -545,14 +545,14 @@ const QUIZ_QUESTIONS = {
         'A keynote speech'
       ],
       'answer': 3,
-      'explanation': '「10:00 AM: Keynote（基調講演）」とスケジュールにあります。'
+      'explanation': '縲・0:00 AM: Keynote・亥渕隱ｿ隰帶ｼ費ｼ峨阪→繧ｹ繧ｱ繧ｸ繝･繝ｼ繝ｫ縺ｫ縺ゅｊ縺ｾ縺吶・
     },
     {
       'question':
           '[Store Hours] Monday-Friday: 9 AM - 9 PM. Saturday: 10 AM - 6 PM. Sunday: Closed. Question: When does the store close on Saturdays?',
       'options': ['6 PM', '9 PM', '10 AM', 'It is closed'],
       'answer': 0,
-      'explanation': '「Saturday: 10 AM - 6 PM」より、閉店時間は午後6時です。'
+      'explanation': '縲郡aturday: 10 AM - 6 PM縲阪ｈ繧翫・哩蠎玲凾髢薙・蜊亥ｾ・譎ゅ〒縺吶・
     },
     {
       'question':
@@ -565,7 +565,7 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 2,
       'explanation':
-          '「attached the invoice（請求書を添付した）」とあります。invoiceはbilling document（請求書類）の一種です。'
+          '縲径ttached the invoice・郁ｫ区ｱよ嶌繧呈ｷｻ莉倥＠縺滂ｼ峨阪→縺ゅｊ縺ｾ縺吶Ｊnvoice縺ｯbilling document・郁ｫ区ｱよ嶌鬘橸ｼ峨・荳遞ｮ縺ｧ縺吶・
     },
     {
       'question':
@@ -577,7 +577,7 @@ const QUIZ_QUESTIONS = {
         'Show a passport'
       ],
       'answer': 1,
-      'explanation': '「sign in at the front desk（受付で署名する／記帳する）」という指示があります。'
+      'explanation': '縲茎ign in at the front desk・亥女莉倥〒鄂ｲ蜷阪☆繧具ｼ剰ｨ伜ｸｳ縺吶ｋ・峨阪→縺・≧謖・､ｺ縺後≠繧翫∪縺吶・
     },
     {
       'question':
@@ -590,7 +590,7 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 1,
       'explanation':
-          '「Book... by the end of the month（今月末までに予約する）」という期限内の予約（早めの予約）が条件です。'
+          '縲沓ook... by the end of the month・井ｻ頑怦譛ｫ縺ｾ縺ｧ縺ｫ莠育ｴ・☆繧具ｼ峨阪→縺・≧譛滄剞蜀・・莠育ｴ・ｼ域掠繧√・莠育ｴ・ｼ峨′譚｡莉ｶ縺ｧ縺吶・
     },
     {
       'question':
@@ -602,7 +602,7 @@ const QUIZ_QUESTIONS = {
         'A longer lunch break'
       ],
       'answer': 2,
-      'explanation': '「work from home（在宅勤務）」、つまりリモートワークの選択肢について述べています。'
+      'explanation': '縲詣ork from home・亥惠螳・共蜍呻ｼ峨阪√▽縺ｾ繧翫Μ繝｢繝ｼ繝医Ρ繝ｼ繧ｯ縺ｮ驕ｸ謚櫁い縺ｫ縺､縺・※霑ｰ縺ｹ縺ｦ縺・∪縺吶・
     },
     {
       'question':
@@ -615,14 +615,14 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 3,
       'explanation':
-          '「service was quite slow（サービスがかなり遅かった）」と待ち時間（waiting time）に不満を示しています。'
+          '縲茎ervice was quite slow・医し繝ｼ繝薙せ縺後°縺ｪ繧企≦縺九▲縺滂ｼ峨阪→蠕・■譎る俣・・aiting time・峨↓荳肴ｺ繧堤､ｺ縺励※縺・∪縺吶・
     },
     {
       'question':
           '[Itinerary] Flight BA202 departs London at 8:00 AM and arrives in New York at 11:00 AM local time. Question: Where is the flight\'s destination?',
       'options': ['London', 'New York', 'Paris', 'Tokyo'],
       'answer': 1,
-      'explanation': '「arrives in New York（ニューヨークに到着する）」とあるので、目的地はニューヨークです。'
+      'explanation': '縲径rrives in New York・医ル繝･繝ｼ繝ｨ繝ｼ繧ｯ縺ｫ蛻ｰ逹縺吶ｋ・峨阪→縺ゅｋ縺ｮ縺ｧ縲∫岼逧・慍縺ｯ繝九Η繝ｼ繝ｨ繝ｼ繧ｯ縺ｧ縺吶・
     },
     {
       'question':
@@ -635,7 +635,7 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 2,
       'explanation':
-          '「after completing one year of service（1年間の勤務を終えた後）」と条件が示されています。'
+          '縲径fter completing one year of service・・蟷ｴ髢薙・蜍､蜍吶ｒ邨ゅ∴縺溷ｾ鯉ｼ峨阪→譚｡莉ｶ縺檎､ｺ縺輔ｌ縺ｦ縺・∪縺吶・
     },
     {
       'question':
@@ -648,7 +648,7 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 1,
       'explanation':
-          '「use the alternative entrance near the cafeteria（カフェテリア近くの別の入口を使ってください）」と指示されています。'
+          '縲蛍se the alternative entrance near the cafeteria・医き繝輔ぉ繝・Μ繧｢霑代￥縺ｮ蛻･縺ｮ蜈･蜿｣繧剃ｽｿ縺｣縺ｦ縺上□縺輔＞・峨阪→謖・､ｺ縺輔ｌ縺ｦ縺・∪縺吶・
     },
     {
       'question':
@@ -660,7 +660,7 @@ const QUIZ_QUESTIONS = {
         'To announce a sale'
       ],
       'answer': 2,
-      'explanation': '購読期限（expire on Oct 31）が近づいていることを知らせ、更新を促すリマインドメールです。'
+      'explanation': '雉ｼ隱ｭ譛滄剞・・xpire on Oct 31・峨′霑代▼縺・※縺・ｋ縺薙→繧堤衍繧峨○縲∵峩譁ｰ繧剃ｿ・☆繝ｪ繝槭う繝ｳ繝峨Γ繝ｼ繝ｫ縺ｧ縺吶・
     },
     {
       'question':
@@ -673,7 +673,7 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 1,
       'explanation':
-          '「open a new manufacturing plant（新しい製造工場を開く）」、つまり新施設（facility）の開設です。'
+          '縲経pen a new manufacturing plant・域眠縺励＞陬ｽ騾蟾･蝣ｴ繧帝幕縺擾ｼ峨阪√▽縺ｾ繧頑眠譁ｽ險ｭ・・acility・峨・髢玖ｨｭ縺ｧ縺吶・
     },
     {
       'question':
@@ -686,14 +686,14 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 1,
       'explanation':
-          'サーバーのアップグレードに1万ドルを割り当てた（allocated \$10,000）ことから、費用をかけることに合意したと分かります。'
+          '繧ｵ繝ｼ繝舌・縺ｮ繧｢繝・・繧ｰ繝ｬ繝ｼ繝峨↓1荳・ラ繝ｫ繧貞牡繧雁ｽ薙※縺滂ｼ・llocated \$10,000・峨％縺ｨ縺九ｉ縲∬ｲｻ逕ｨ繧偵°縺代ｋ縺薙→縺ｫ蜷域э縺励◆縺ｨ蛻・°繧翫∪縺吶・
     },
     {
       'question':
           '[Webpage] Register for our newsletter and receive a coupon for \$10 off your first purchase over \$50. Question: How much must a customer spend to use the coupon?',
       'options': ['\$10', '\$40', '\$50', '\$60'],
       'answer': 2,
-      'explanation': '「purchase over \$50（50ドル以上の購入）」がクーポン使用の条件です。'
+      'explanation': '縲継urchase over \$50・・0繝峨Ν莉･荳翫・雉ｼ蜈･・峨阪′繧ｯ繝ｼ繝昴Φ菴ｿ逕ｨ縺ｮ譚｡莉ｶ縺ｧ縺吶・
     },
     {
       'question':
@@ -706,7 +706,7 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 1,
       'explanation':
-          '「application for the loan has been approved（ローンの申請が承認された）」とあります。'
+          '縲径pplication for the loan has been approved・医Ο繝ｼ繝ｳ縺ｮ逕ｳ隲九′謇ｿ隱阪＆繧後◆・峨阪→縺ゅｊ縺ｾ縺吶・
     },
     {
       'question':
@@ -719,7 +719,7 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 1,
       'explanation':
-          '「while operating the drilling machinery（掘削機を操作する間）」という記述から、機械の作業者が対象です。'
+          '縲詣hile operating the drilling machinery・域侍蜑頑ｩ溘ｒ謫堺ｽ懊☆繧矩俣・峨阪→縺・≧險倩ｿｰ縺九ｉ縲∵ｩ滓｢ｰ縺ｮ菴懈･ｭ閠・′蟇ｾ雎｡縺ｧ縺吶・
     },
     {
       'question':
@@ -731,7 +731,7 @@ const QUIZ_QUESTIONS = {
         'Downtown'
       ],
       'answer': 1,
-      'explanation': '「Located on Highway 12」と場所が明記されています。'
+      'explanation': '縲鍬ocated on Highway 12縲阪→蝣ｴ謇縺梧・險倥＆繧後※縺・∪縺吶・
     },
     {
       'question':
@@ -744,7 +744,7 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 2,
       'explanation':
-          '「restrooms... are temporarily out of order（トイレは一時的に使用不可）」とあります。'
+          '縲罫estrooms... are temporarily out of order・医ヨ繧､繝ｬ縺ｯ荳譎ら噪縺ｫ菴ｿ逕ｨ荳榊庄・峨阪→縺ゅｊ縺ｾ縺吶・
     },
     {
       'question':
@@ -756,7 +756,7 @@ const QUIZ_QUESTIONS = {
         'Providing a reference'
       ],
       'answer': 1,
-      'explanation': '「invite you for an interview（面接に招待する）」と、面接の予定を立てようとしています。'
+      'explanation': '縲景nvite you for an interview・磯擇謗･縺ｫ諡帛ｾ・☆繧具ｼ峨阪→縲・擇謗･縺ｮ莠亥ｮ壹ｒ遶九※繧医≧縺ｨ縺励※縺・∪縺吶・
     },
     {
       'question':
@@ -769,14 +769,14 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 2,
       'explanation':
-          '「personal phone calls should be kept to a minimum（私用電話は最小限に抑えるべき）」と指示しています。'
+          '縲継ersonal phone calls should be kept to a minimum・育ｧ∫畑髮ｻ隧ｱ縺ｯ譛蟆城剞縺ｫ謚代∴繧九∋縺搾ｼ峨阪→謖・､ｺ縺励※縺・∪縺吶・
     },
     {
       'question':
           '[Contract] This agreement shall remain in effect for a period of three years from the date of signing. Question: How long is the contract valid?',
       'options': ['One year', 'Two years', 'Three years', 'Five years'],
       'answer': 2,
-      'explanation': '「for a period of three years（3年間）」と有効期間が記されています。'
+      'explanation': '縲掲or a period of three years・・蟷ｴ髢難ｼ峨阪→譛牙柑譛滄俣縺瑚ｨ倥＆繧後※縺・∪縺吶・
     },
     {
       'question':
@@ -789,23 +789,23 @@ const QUIZ_QUESTIONS = {
       ],
       'answer': 1,
       'explanation':
-          '「previously worked at Media Solutions（以前はMedia Solutionsで働いていた）」とあります。'
+          '縲継reviously worked at Media Solutions・井ｻ･蜑阪・Media Solutions縺ｧ蜒阪＞縺ｦ縺・◆・峨阪→縺ゅｊ縺ｾ縺吶・
     },
     {
       'question':
           '[Airport Sign] Flight AF44 is delayed. New departure time: 4:30 PM. Please check the monitors for gate information. Question: What is the status of Flight AF44?',
       'options': ['Canceled', 'On time', 'Delayed', 'Landed'],
       'answer': 2,
-      'explanation': '「Flight AF44 is delayed（AF44便は遅れている）」と明記されています。'
+      'explanation': '縲熊light AF44 is delayed・・F44萓ｿ縺ｯ驕・ｌ縺ｦ縺・ｋ・峨阪→譏手ｨ倥＆繧後※縺・∪縺吶・
     },
   ],
 };
 const BADGES = [
-  {'id': 1, 'name': 'First Step', 'icon': '⭐', 'need': 1},
-  {'id': 2, 'name': '5 Tasks', 'icon': '⭐⭐', 'need': 5},
-  {'id': 3, 'name': '10 Tasks', 'icon': '⭐⭐⭐', 'need': 10},
-  {'id': 4, 'name': 'Halfway', 'icon': '⭐⭐⭐⭐', 'need': -1},
-  {'id': 5, 'name': 'Complete', 'icon': '⭐⭐⭐⭐⭐', 'need': -2},
+  {'id': 1, 'name': 'First Step', 'icon': '箝・, 'need': 1},
+  {'id': 2, 'name': '5 Tasks', 'icon': '箝絶ｭ・, 'need': 5},
+  {'id': 3, 'name': '10 Tasks', 'icon': '箝絶ｭ絶ｭ・, 'need': 10},
+  {'id': 4, 'name': 'Halfway', 'icon': '箝絶ｭ絶ｭ絶ｭ・, 'need': -1},
+  {'id': 5, 'name': 'Complete', 'icon': '箝絶ｭ絶ｭ絶ｭ絶ｭ・, 'need': -2},
 ];
 
 void main() async {
@@ -828,7 +828,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// スプラッシュ画面（データ読み込み）
+// 繧ｹ繝励Λ繝・す繝･逕ｻ髱｢・医ョ繝ｼ繧ｿ隱ｭ縺ｿ霎ｼ縺ｿ・・
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
   @override
@@ -886,7 +886,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 }
 
-// レベル診断Welcome画面
+// 繝ｬ繝吶Ν險ｺ譁ｭWelcome逕ｻ髱｢
 class LevelDiagnosisWelcome extends StatelessWidget {
   const LevelDiagnosisWelcome({super.key});
 
@@ -907,13 +907,13 @@ class LevelDiagnosisWelcome extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('まず実力チェックをしよう',
+                  const Text('縺ｾ縺壼ｮ溷鴨繝√ぉ繝・け繧偵＠繧医≧',
                       style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: Colors.black)),
                   const SizedBox(height: 16),
-                  const Text('あなたのレベルに合った学習プランを作成するため、簡単な問題を出します。全8問です。',
+                  const Text('縺ゅ↑縺溘・繝ｬ繝吶Ν縺ｫ蜷医▲縺溷ｭｦ鄙偵・繝ｩ繝ｳ繧剃ｽ懈・縺吶ｋ縺溘ａ縲∫ｰ｡蜊倥↑蝠城｡後ｒ蜃ｺ縺励∪縺吶ょ・8蝠上〒縺吶・,
                       style: TextStyle(fontSize: 15, color: Colors.black87),
                       textAlign: TextAlign.center),
                   const SizedBox(height: 24),
@@ -926,7 +926,7 @@ class LevelDiagnosisWelcome extends StatelessWidget {
                         backgroundColor: const Color(0xFF58CC02),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 32, vertical: 14)),
-                    child: const Text('診断を始める',
+                    child: const Text('險ｺ譁ｭ繧貞ｧ九ａ繧・,
                         style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
@@ -942,7 +942,7 @@ class LevelDiagnosisWelcome extends StatelessWidget {
   }
 }
 
-// レベル診断Quiz画面
+// 繝ｬ繝吶Ν險ｺ譁ｭQuiz逕ｻ髱｢
 class LevelDiagnosisQuiz extends StatefulWidget {
   const LevelDiagnosisQuiz({super.key});
   @override
@@ -959,7 +959,7 @@ class _LevelDiagnosisQuizState extends State<LevelDiagnosisQuiz> {
   @override
   void initState() {
     super.initState();
-    // 各レベルから2問ずつ
+    // 蜷・Ξ繝吶Ν縺九ｉ2蝠上★縺､
     final levels = [
       {
         'name': '300',
@@ -1056,10 +1056,10 @@ class _LevelDiagnosisQuizState extends State<LevelDiagnosisQuiz> {
                 ? 'intermediate'
                 : 'beginner';
         final scoreLabel = correctCount >= 7
-            ? '800-900点レベル'
+            ? '800-900轤ｹ繝ｬ繝吶Ν'
             : correctCount >= 4
-                ? '600-800点レベル'
-                : '300-600点レベル';
+                ? '600-800轤ｹ繝ｬ繝吶Ν'
+                : '300-600轤ｹ繝ｬ繝吶Ν';
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -1081,7 +1081,7 @@ class _LevelDiagnosisQuizState extends State<LevelDiagnosisQuiz> {
         child: Column(
           children: [
             const SizedBox(height: 60),
-            const Text('実力チェック',
+            const Text('螳溷鴨繝√ぉ繝・け',
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 17,
@@ -1094,7 +1094,7 @@ class _LevelDiagnosisQuizState extends State<LevelDiagnosisQuiz> {
                   borderRadius: BorderRadius.circular(20)),
               child: Column(
                 children: [
-                  Text('問題 ${currentIndex + 1} / ${questions.length}',
+                  Text('蝠城｡・${currentIndex + 1} / ${questions.length}',
                       style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -1144,7 +1144,7 @@ class _LevelDiagnosisQuizState extends State<LevelDiagnosisQuiz> {
                               ? Colors.green.shade50
                               : Colors.red.shade50,
                           borderRadius: BorderRadius.circular(8)),
-                      child: Text(selected == q['answer'] ? '正解' : '不正解',
+                      child: Text(selected == q['answer'] ? '豁｣隗｣' : '荳肴ｭ｣隗｣',
                           style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.black87)),
@@ -1159,7 +1159,7 @@ class _LevelDiagnosisQuizState extends State<LevelDiagnosisQuiz> {
                           : const Color(0xFF58CC02),
                       minimumSize: const Size(double.infinity, 48),
                     ),
-                    child: const Text('回答する',
+                    child: const Text('蝗樒ｭ斐☆繧・,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
@@ -1173,7 +1173,7 @@ class _LevelDiagnosisQuizState extends State<LevelDiagnosisQuiz> {
   }
 }
 
-// レベル診断Result画面
+// 繝ｬ繝吶Ν險ｺ譁ｭResult逕ｻ髱｢
 class LevelDiagnosisResult extends StatelessWidget {
   final String level;
   final String scoreLabel;
@@ -1182,7 +1182,7 @@ class LevelDiagnosisResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labels = {'beginner': '初級', 'intermediate': '中級', 'advanced': '上級'};
+    final labels = {'beginner': '蛻晉ｴ・, 'intermediate': '荳ｭ邏・, 'advanced': '荳顔ｴ・};
     final colors = {
       'beginner': Colors.blue,
       'intermediate': Colors.orange,
@@ -1203,7 +1203,7 @@ class LevelDiagnosisResult extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('診断結果',
+                  const Text('險ｺ譁ｭ邨先棡',
                       style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -1231,7 +1231,7 @@ class LevelDiagnosisResult extends StatelessWidget {
                         backgroundColor: const Color(0xFF58CC02),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 32, vertical: 14)),
-                    child: const Text('次へ',
+                    child: const Text('谺｡縺ｸ',
                         style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
@@ -1247,7 +1247,7 @@ class LevelDiagnosisResult extends StatelessWidget {
   }
 }
 
-// 性格診断
+// 諤ｧ譬ｼ險ｺ譁ｭ
 class PersonalityTest extends StatefulWidget {
   final String level;
   const PersonalityTest({super.key, required this.level});
@@ -1260,18 +1260,18 @@ class _PersonalityTestState extends State<PersonalityTest> {
   final Map<String, String> answers = {};
   final List<Map<String, dynamic>> questions = [
     {
-      'q': '毎日決まった時間に勉強できる？',
-      'opts': ['できる', 'できない'],
+      'q': '豈取律豎ｺ縺ｾ縺｣縺滓凾髢薙↓蜍牙ｼｷ縺ｧ縺阪ｋ・・,
+      'opts': ['縺ｧ縺阪ｋ', '縺ｧ縺阪↑縺・],
       'key': 'routine'
     },
     {
-      'q': '一度に長時間集中できる？',
-      'opts': ['できる', 'できない'],
+      'q': '荳蠎ｦ縺ｫ髟ｷ譎る俣髮・ｸｭ縺ｧ縺阪ｋ・・,
+      'opts': ['縺ｧ縺阪ｋ', '縺ｧ縺阪↑縺・],
       'key': 'focus'
     },
     {
-      'q': 'ゲーム感覚で学ぶのが好き？',
-      'opts': ['好き', '苦手'],
+      'q': '繧ｲ繝ｼ繝諢溯ｦ壹〒蟄ｦ縺ｶ縺ｮ縺悟･ｽ縺搾ｼ・,
+      'opts': ['螂ｽ縺・, '闍ｦ謇・],
       'key': 'gamified'
     },
   ];
@@ -1309,7 +1309,7 @@ class _PersonalityTestState extends State<PersonalityTest> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('質問 ${currentQuestion + 1} / ${questions.length}',
+                  Text('雉ｪ蝠・${currentQuestion + 1} / ${questions.length}',
                       style:
                           const TextStyle(fontSize: 14, color: Colors.black54)),
                   const SizedBox(height: 16),
@@ -1346,7 +1346,7 @@ class _PersonalityTestState extends State<PersonalityTest> {
   }
 }
 
-// 受験日入力
+// 蜿鈴ｨ捺律蜈･蜉・
 class ExamDateInput extends StatefulWidget {
   final Map<String, String> personality;
   final String level;
@@ -1371,7 +1371,7 @@ class _ExamDateInputState extends State<ExamDateInput> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('TOEIC受験日を選択',
+              const Text('TOEIC蜿鈴ｨ捺律繧帝∈謚・,
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
               const SizedBox(height: 40),
               Row(
@@ -1381,19 +1381,19 @@ class _ExamDateInputState extends State<ExamDateInput> {
                       value: selectedYear,
                       items: List.generate(3, (i) => DateTime.now().year + i),
                       onChanged: (val) => setState(() => selectedYear = val!),
-                      suffix: '年'),
+                      suffix: '蟷ｴ'),
                   const SizedBox(width: 16),
                   _buildDropdown(
                       value: selectedMonth,
                       items: List.generate(12, (i) => i + 1),
                       onChanged: (val) => setState(() => selectedMonth = val!),
-                      suffix: '月'),
+                      suffix: '譛・),
                   const SizedBox(width: 16),
                   _buildDropdown(
                       value: selectedDay,
                       items: List.generate(31, (i) => i + 1),
                       onChanged: (val) => setState(() => selectedDay = val!),
-                      suffix: '日'),
+                      suffix: '譌･'),
                 ],
               ),
               const SizedBox(height: 60),
@@ -1414,7 +1414,7 @@ class _ExamDateInputState extends State<ExamDateInput> {
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 48, vertical: 16)),
-                child: const Text('冒険を開始！', style: TextStyle(fontSize: 18)),
+                child: const Text('蜀帝匱繧帝幕蟋具ｼ・, style: TextStyle(fontSize: 18)),
               ),
             ],
           ),
@@ -1446,7 +1446,7 @@ class _ExamDateInputState extends State<ExamDateInput> {
   }
 }
 
-// 山道画面（メイン）
+// 螻ｱ驕鍋判髱｢・医Γ繧､繝ｳ・・
 class MountainPathScreen extends StatefulWidget {
   final DateTime examDate;
   final Map<String, String> personality;
@@ -1513,16 +1513,16 @@ class _MountainPathScreenState extends State<MountainPathScreen> {
             {
               'role': 'user',
               'content': '''
-TOEICの学習スケジュールを作成してください。
-レベル: $level
-残り日数: $diffDays日
-タスク数: ${diffDays > 30 ? 30 : diffDays}個
+TOEIC縺ｮ蟄ｦ鄙偵せ繧ｱ繧ｸ繝･繝ｼ繝ｫ繧剃ｽ懈・縺励※縺上□縺輔＞縲・
+繝ｬ繝吶Ν: $level
+谿九ｊ譌･謨ｰ: $diffDays譌･
+繧ｿ繧ｹ繧ｯ謨ｰ: ${diffDays > 30 ? 30 : diffDays}蛟・
 
-以下のJSON形式で返してください:
-{"tasks": [{"task": "タスク名", "reason": "理由"}]}
+莉･荳九・JSON蠖｢蠑上〒霑斐＠縺ｦ縺上□縺輔＞:
+{"tasks": [{"task": "繧ｿ繧ｹ繧ｯ蜷・, "reason": "逅・罰"}]}
 
-タスク名は「単語学習」「文法練習」「リーディング演習」などを含めてください。
-JSONのみ返してください。
+繧ｿ繧ｹ繧ｯ蜷阪・縲悟腰隱槫ｭｦ鄙偵阪梧枚豕慕ｷｴ鄙偵阪後Μ繝ｼ繝・ぅ繝ｳ繧ｰ貍皮ｿ偵阪↑縺ｩ繧貞性繧√※縺上□縺輔＞縲・
+JSON縺ｮ縺ｿ霑斐＠縺ｦ縺上□縺輔＞縲・
 '''
             }
           ],
@@ -1572,7 +1572,7 @@ JSONのみ返してください。
         'quizStats': quizStats,
       });
 
-      // 週間ランキング用
+      // 騾ｱ髢薙Λ繝ｳ繧ｭ繝ｳ繧ｰ逕ｨ
       final now = DateTime.now();
       final weekStart = now.subtract(Duration(days: now.weekday - 1));
       final weekKey =
@@ -1646,7 +1646,7 @@ JSONのみ返してください。
           shownBadgeIds.add(badgeId);
         });
         _saveData();
-        // 直接showDialogを呼ぶ
+        // 逶ｴ謗･showDialog繧貞他縺ｶ
         Future.delayed(const Duration(milliseconds: 300), () {
           if (mounted) {
             showDialog(
@@ -1669,10 +1669,10 @@ JSONのみ返してください。
 
     final task = tasks[i]['task'].toString().toLowerCase();
     String category = 'vocabulary';
-    if (task.contains('文法') || task.contains('grammar')) {
+    if (task.contains('譁・ｳ・) || task.contains('grammar')) {
       category = 'grammar';
-    } else if (task.contains('読解') ||
-        task.contains('リーディング') ||
+    } else if (task.contains('隱ｭ隗｣') ||
+        task.contains('繝ｪ繝ｼ繝・ぅ繝ｳ繧ｰ') ||
         task.contains('reading')) {
       category = 'reading';
     }
@@ -1683,7 +1683,7 @@ JSONのみ返してください。
         category: category,
         onComplete: (success, cat) {
           if (success) {
-            // 正解率を記録
+            // 豁｣隗｣邇・ｒ險倬鹸
             quizStats[cat]!['total'] = (quizStats[cat]!['total'] ?? 0) + 1;
             quizStats[cat]!['correct'] = (quizStats[cat]!['correct'] ?? 0) + 1;
 
@@ -1698,7 +1698,7 @@ JSONのみ返してください。
             _saveData();
             checkNewBadges();
           } else {
-            // 不正解も記録
+            // 荳肴ｭ｣隗｣繧りｨ倬鹸
             quizStats[cat]!['total'] = (quizStats[cat]!['total'] ?? 0) + 1;
             _saveData();
           }
@@ -1712,7 +1712,7 @@ JSONのみ返してください。
     final todayDate = DateTime(today.year, today.month, today.day);
 
     if (lastCompletedDate == null) {
-      // 初回
+      // 蛻晏屓
       currentStreak = 1;
       lastCompletedDate = todayDate;
     } else {
@@ -1724,13 +1724,13 @@ JSONのみ返してください。
       final diff = todayDate.difference(lastDate).inDays;
 
       if (diff == 0) {
-        // 今日既に完了済み（何もしない）
+        // 莉頑律譌｢縺ｫ螳御ｺ・ｸ医∩・井ｽ輔ｂ縺励↑縺・ｼ・
       } else if (diff == 1) {
-        // 連続
+        // 騾｣邯・
         currentStreak++;
         lastCompletedDate = todayDate;
       } else {
-        // 途切れた
+        // 騾泌・繧後◆
         currentStreak = 1;
         lastCompletedDate = todayDate;
       }
@@ -1745,8 +1745,8 @@ JSONのみ返してください。
     weekCompleted = 0;
     monthCompleted = 0;
 
-    // 今日・今週・今月のタスク完了数をカウント
-    // 注: 今は全タスクを見てるが、後で日付別に分けるべき
+    // 莉頑律繝ｻ莉企ｱ繝ｻ莉頑怦縺ｮ繧ｿ繧ｹ繧ｯ螳御ｺ・焚繧偵き繧ｦ繝ｳ繝・
+    // 豕ｨ: 莉翫・蜈ｨ繧ｿ繧ｹ繧ｯ繧定ｦ九※繧九′縲∝ｾ後〒譌･莉伜挨縺ｫ蛻・￠繧九∋縺・
     for (int i = 0; i < tasks.length && i < tasksCompleted.length; i++) {
       if (tasksCompleted[i]) {
         todayCompleted++;
@@ -1759,7 +1759,7 @@ JSONのみ返してください。
   Widget _buildCategoryButton(String label, String category, int count) {
     return GestureDetector(
       onTap: () {
-        Navigator.pop(context); // カテゴリ選択を閉じる
+        Navigator.pop(context); // 繧ｫ繝・ざ繝ｪ驕ｸ謚槭ｒ髢峨§繧・
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -1789,51 +1789,7 @@ JSONのみ返してください。
                   fontWeight: FontWeight.bold),
             ),
             Text(
-              '$count問',
-              style: const TextStyle(color: Colors.white70, fontSize: 14),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReviewCategoryButton(
-      String label, String category, int total, int correct) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => QuizSessionScreen(
-              category: category,
-              questionCount: 5,
-              isReviewMode: true,
-            ),
-          ),
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFFF9800), Color(0xFFF57C00)],
-          ),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            Text(
-              '間違い ${total - correct}問',
+              '$count蝠・,
               style: const TextStyle(color: Colors.white70, fontSize: 14),
             ),
           ],
@@ -1847,7 +1803,7 @@ JSONのみ返してください。
     final progress =
         tasks.isEmpty ? 0 : (completedCount / tasks.length * 100).round();
 
-    // バッジポップアップ
+    // 繝舌ャ繧ｸ繝昴ャ繝励い繝・・
     if (popBadgeId != null) {
       final badge = BADGES.firstWhere((b) => b['id'] == popBadgeId);
       Future.microtask(() {
@@ -1899,14 +1855,14 @@ JSONのみ返してください。
                           const Icon(Icons.local_fire_department,
                               color: Colors.orange, size: 20),
                           const SizedBox(width: 4),
-                          Text('$currentStreak日連続',
+                          Text('$currentStreak譌･騾｣邯・,
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold)),
                           const SizedBox(width: 12),
                         ],
-                        Text('$completedCount タスク完了',
+                        Text('$completedCount 繧ｿ繧ｹ繧ｯ螳御ｺ・,
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
@@ -1953,7 +1909,7 @@ JSONのみ返してください。
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('進捗',
+                        const Text('騾ｲ謐・,
                             style:
                                 TextStyle(color: Colors.white, fontSize: 12)),
                         Text('$progress%',
@@ -1983,7 +1939,7 @@ JSONのみ返してください。
               ),
               const SizedBox(height: 20),
               const SizedBox(height: 20),
-// 達成率表示
+// 驕疲・邇・｡ｨ遉ｺ
               Container(
                 padding: const EdgeInsets.all(16),
                 margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -2003,7 +1959,7 @@ JSONのみ返してください。
                   children: [
                     Column(
                       children: [
-                        const Text('今日',
+                        const Text('莉頑律',
                             style: TextStyle(fontSize: 12, color: Colors.grey)),
                         Text('$todayCompleted/${tasks.length}',
                             style: const TextStyle(
@@ -2014,7 +1970,7 @@ JSONのみ返してください。
                     ),
                     Column(
                       children: [
-                        const Text('今週',
+                        const Text('莉企ｱ',
                             style: TextStyle(fontSize: 12, color: Colors.grey)),
                         Text('$weekCompleted/${tasks.length}',
                             style: const TextStyle(
@@ -2025,7 +1981,7 @@ JSONのみ返してください。
                     ),
                     Column(
                       children: [
-                        const Text('今月',
+                        const Text('莉頑怦',
                             style: TextStyle(fontSize: 12, color: Colors.grey)),
                         Text('$monthCompleted/${tasks.length} ',
                             style: const TextStyle(
@@ -2038,7 +1994,7 @@ JSONのみ返してください。
                 ),
               ),
               const SizedBox(height: 20),
-              // 今すぐ1問ボタン
+              // 莉翫☆縺・蝠上・繧ｿ繝ｳ
               GestureDetector(
                 onTap: () {
                   showDialog(
@@ -2050,18 +2006,18 @@ JSONのみ返してください。
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Text(
-                              'カテゴリを選択',
+                              '繧ｫ繝・ざ繝ｪ繧帝∈謚・,
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xFF333333)),
                             ),
                             const SizedBox(height: 20),
-                            _buildCategoryButton('単語', 'vocabulary', 5),
+                            _buildCategoryButton('蜊倩ｪ・, 'vocabulary', 5),
                             const SizedBox(height: 12),
-                            _buildCategoryButton('文法', 'grammar', 2),
+                            _buildCategoryButton('譁・ｳ・, 'grammar', 2),
                             const SizedBox(height: 12),
-                            _buildCategoryButton('読解', 'reading', 2),
+                            _buildCategoryButton('隱ｭ隗｣', 'reading', 2),
                           ],
                         ),
                       ),
@@ -2090,7 +2046,7 @@ JSONのみ返してください。
                       Icon(Icons.flash_on, color: Colors.white, size: 28),
                       SizedBox(width: 12),
                       Text(
-                        '今すぐ1問',
+                        '莉翫☆縺・蝠・,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -2099,796 +2055,3 @@ JSONのみ返してください。
                       ),
                     ],
                   ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              // 復習ボタン
-              GestureDetector(
-                onTap: () {
-                  List<Map<String, dynamic>> reviewCategories = [];
-                  quizStats.forEach((category, stats) {
-                    final total = stats['total'] ?? 0;
-                    final correct = stats['correct'] ?? 0;
-                    if (total > 0) {
-                      final accuracy = (correct / total * 100).round();
-                      if (correct < total) {
-                        reviewCategories.add({
-                          'category': category,
-                          'total': total as int,
-                          'correct': correct as int,
-                          'displayName': category == 'vocabulary'
-                              ? '単語'
-                              : category == 'grammar'
-                                  ? '文法'
-                                  : '読解',
-                        });
-                      }
-                    }
-                  });
-                  if (reviewCategories.isEmpty) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('復習なし'),
-                        content: const Text('復習する問題がありません！\n全問正解率70%以上です。'),
-                        actions: [
-                          TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('OK'))
-                        ],
-                      ),
-                    );
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) => Dialog(
-                        child: Container(
-                          padding: const EdgeInsets.all(24),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('復習するカテゴリを選択',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF333333))),
-                              const SizedBox(height: 20),
-                              ...reviewCategories
-                                  .map((cat) => Column(children: [
-                                        _buildReviewCategoryButton(
-                                            cat['displayName'],
-                                            cat['category'],
-                                            cat['total'],
-                                            cat['correct']),
-                                        const SizedBox(height: 12)
-                                      ]))
-                                  .toList(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                },
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                        colors: [Color(0xFFFF9800), Color(0xFFF57C00)]),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.orange,
-                          blurRadius: 12,
-                          offset: const Offset(0, 4))
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.refresh, color: Colors.white, size: 28),
-                      SizedBox(width: 12),
-                      Text('復習する',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold))
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              // Task list
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: tasks.length,
-                  itemBuilder: (context, i) {
-                    final task = tasks[i];
-                    final done = tasksCompleted[i];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () => toggleComplete(i),
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: done
-                                    ? const Color(0xFF58CC02)
-                                    : Colors.white,
-                                border: Border.all(
-                                    color: done
-                                        ? const Color(0xFF58CC02)
-                                        : Colors.grey.shade400,
-                                    width: 3),
-                              ),
-                              child: Center(
-                                child: done
-                                    ? const Icon(Icons.check,
-                                        color: Colors.white, size: 20)
-                                    : Text('${i + 1}',
-                                        style: const TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black54)),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color:
-                                    done ? Colors.green.shade50 : Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2))
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    task['task'],
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color:
-                                            done ? Colors.grey : Colors.black87,
-                                        decoration: done
-                                            ? TextDecoration.lineThrough
-                                            : null),
-                                  ),
-                                  if (task['reason'] != null &&
-                                      task['reason'].toString().isNotEmpty) ...[
-                                    const SizedBox(height: 4),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          tasksExpanded[i] = !tasksExpanded[i];
-                                        });
-                                      },
-                                      child: Row(
-                                        children: [
-                                          const Icon(Icons.lightbulb_outline,
-                                              size: 14,
-                                              color: Color(0xFFF39C12)),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            tasksExpanded[i]
-                                                ? '理由を隠す'
-                                                : '理由を見る',
-                                            style: const TextStyle(
-                                                fontSize: 11,
-                                                color: Color(0xFFF39C12)),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    if (tasksExpanded[i])
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 4),
-                                        child: Text(
-                                          task['reason'],
-                                          style: const TextStyle(
-                                              fontSize: 11,
-                                              color: Colors.black54),
-                                        ),
-                                      ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// クイズモーダル
-class QuizModal extends StatefulWidget {
-  final String category;
-  final Function(bool success, String category) onComplete;
-  const QuizModal(
-      {super.key, required this.category, required this.onComplete});
-  @override
-  State<QuizModal> createState() => _QuizModalState();
-}
-
-class _QuizModalState extends State<QuizModal> {
-  late Map<String, dynamic> question;
-  int? selected;
-  bool showAnswer = false;
-
-  @override
-  void initState() {
-    super.initState();
-    final questions =
-        QUIZ_QUESTIONS[widget.category] ?? QUIZ_QUESTIONS['vocabulary']!;
-    final list = (questions as List);
-    question = list[math.Random().nextInt(list.length)];
-  }
-
-  void handleAnswer() {
-    if (selected == null) return;
-    setState(() => showAnswer = true);
-    if (selected == question['answer']) {
-      Future.delayed(const Duration(milliseconds: 1500), () {
-        widget.onComplete(true, widget.category);
-        Navigator.pop(context);
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(16)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(question['question'],
-                style: const TextStyle(fontSize: 15, color: Colors.black87)),
-            const SizedBox(height: 16),
-            ...List.generate((question['options'] as List).length, (idx) {
-              return GestureDetector(
-                onTap: showAnswer ? null : () => setState(() => selected = idx),
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                        color: selected == idx
-                            ? const Color(0xFF58CC02)
-                            : Colors.grey.shade300,
-                        width: 2),
-                    borderRadius: BorderRadius.circular(8),
-                    color: showAnswer
-                        ? (idx == question['answer']
-                            ? Colors.green.shade50
-                            : selected == idx
-                                ? Colors.red.shade50
-                                : Colors.white)
-                        : selected == idx
-                            ? Colors.grey.shade100
-                            : Colors.white,
-                  ),
-                  child: Text((question['options'] as List)[idx],
-                      style:
-                          const TextStyle(fontSize: 14, color: Colors.black87)),
-                ),
-              );
-            }),
-            if (showAnswer)
-              Container(
-                margin: const EdgeInsets.only(top: 16),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                    color: selected == question['answer']
-                        ? Colors.green.shade50
-                        : Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(8)),
-                child: Column(
-                  children: [
-                    Text(selected == question['answer'] ? '正解！' : '不正解',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87)),
-                    const SizedBox(height: 4),
-                    Text(question['explanation'],
-                        style: const TextStyle(
-                            fontSize: 13, color: Colors.black87)),
-                  ],
-                ),
-              ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed:
-                        (selected == null || showAnswer) ? null : handleAnswer,
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: (selected == null || showAnswer)
-                            ? Colors.grey
-                            : const Color(0xFF58CC02)),
-                    child: const Text('回答する',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white)),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      widget.onComplete(true, widget.category);
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade600),
-                    child: const Text('スキップ',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white)),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class QuizSessionScreen extends StatefulWidget {
-  final String category;
-  final int questionCount;
-  final bool isReviewMode;
-
-  const QuizSessionScreen({
-    super.key,
-    required this.category,
-    required this.questionCount,
-    this.isReviewMode = false,
-  });
-
-  @override
-  State<QuizSessionScreen> createState() => _QuizSessionScreenState();
-}
-
-class _QuizSessionScreenState extends State<QuizSessionScreen> {
-  int currentIndex = 0;
-  int correctCount = 0;
-  List<Map<String, dynamic>> questions = [];
-  int? selectedOption;
-  bool showResult = false;
-
-  @override
-  void initState() {
-    super.initState();
-    final allQuestions = QUIZ_QUESTIONS[widget.category] as List;
-    final shuffled = allQuestions.toList();
-    shuffled.shuffle();
-    questions = shuffled
-        .take(widget.questionCount)
-        .toList()
-        .cast<Map<String, dynamic>>();
-  }
-
-  void _nextQuestion(bool isCorrect) {
-    if (isCorrect) correctCount++;
-
-    if (currentIndex + 1 >= questions.length) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QuizResultScreen(
-            category: widget.category,
-            total: questions.length,
-            correct: correctCount,
-          ),
-        ),
-      );
-    } else {
-      setState(() {
-        currentIndex++;
-        selectedOption = null;
-        showResult = false;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (questions.isEmpty)
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-
-    final question = questions[currentIndex];
-    final options = List<String>.from(question['options']);
-    final correctAnswer = question['answer'] as int;
-
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        title: Text('${currentIndex + 1} / ${questions.length}'),
-        backgroundColor: const Color(0xFF5DADE2),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              question['question'],
-              style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF333333)),
-            ),
-            const SizedBox(height: 30),
-            ...List.generate(options.length, (i) {
-              final isSelected = selectedOption == i;
-              final isCorrect = i == correctAnswer;
-              Color? bgColor;
-              if (showResult) {
-                if (isCorrect)
-                  bgColor = Colors.green.shade100;
-                else if (isSelected) bgColor = Colors.red.shade100;
-              }
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: GestureDetector(
-                  onTap: showResult
-                      ? null
-                      : () {
-                          setState(() {
-                            selectedOption = i;
-                          });
-                        },
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: bgColor ??
-                          (isSelected ? Colors.blue.shade50 : Colors.white),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isSelected
-                            ? const Color(0xFF5DADE2)
-                            : Colors.grey.shade300,
-                        width: 2,
-                      ),
-                    ),
-                    child: Text(
-                      options[i],
-                      style: const TextStyle(
-                          fontSize: 16, color: Color(0xFF333333)),
-                    ),
-                  ),
-                ),
-              );
-            }),
-            const Spacer(),
-            if (!showResult && selectedOption != null)
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    showResult = true;
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF5DADE2),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text('回答する',
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
-              ),
-            if (showResult)
-              Column(
-                children: [
-                  Text(
-                    selectedOption == correctAnswer ? '正解！' : '不正解...',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: selectedOption == correctAnswer
-                          ? Colors.green
-                          : Colors.red,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  ElevatedButton(
-                    onPressed: () {
-                      _nextQuestion(selectedOption == correctAnswer);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF5DADE2),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: Text(
-                      currentIndex + 1 >= questions.length ? '結果を見る' : '次へ',
-                      style: const TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class QuizResultScreen extends StatefulWidget {
-  final String category;
-  final int total;
-  final int correct;
-
-  const QuizResultScreen({
-    super.key,
-    required this.category,
-    required this.total,
-    required this.correct,
-  });
-
-  @override
-  State<QuizResultScreen> createState() => _QuizResultScreenState();
-}
-
-class _QuizResultScreenState extends State<QuizResultScreen> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String userId = 'default_user';
-
-  @override
-  void initState() {
-    super.initState();
-    _saveQuizStats();
-  }
-
-  Future<void> _saveQuizStats() async {
-    try {
-      final doc = await _firestore.collection('users').doc(userId).get();
-      if (doc.exists) {
-        final data = doc.data()!;
-        Map<String, Map<String, int>> quizStats = {
-          'vocabulary': {'correct': 0, 'total': 0},
-          'grammar': {'correct': 0, 'total': 0},
-          'reading': {'correct': 0, 'total': 0},
-        };
-
-        if (data['quizStats'] != null) {
-          final stats = Map<String, dynamic>.from(data['quizStats']);
-          quizStats = {
-            'vocabulary': Map<String, int>.from(
-                stats['vocabulary'] ?? {'correct': 0, 'total': 0}),
-            'grammar': Map<String, int>.from(
-                stats['grammar'] ?? {'correct': 0, 'total': 0}),
-            'reading': Map<String, int>.from(
-                stats['reading'] ?? {'correct': 0, 'total': 0}),
-          };
-        }
-
-        quizStats[widget.category]!['total'] =
-            (quizStats[widget.category]!['total'] ?? 0) + widget.total;
-        quizStats[widget.category]!['correct'] =
-            (quizStats[widget.category]!['correct'] ?? 0) + widget.correct;
-
-        await _firestore
-            .collection('users')
-            .doc(userId)
-            .update({'quizStats': quizStats});
-        print(
-            'QuizStats saved: ${widget.category} - ${widget.correct}/${widget.total}');
-      }
-    } catch (e) {
-      print('Error saving quiz stats: $e');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final percentage = (widget.correct / widget.total * 100).round();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('結果'),
-        backgroundColor: const Color(0xFF5DADE2),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '${widget.total}問中${widget.correct}問正解！',
-              style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF333333)),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              '正解率 $percentage%',
-              style: const TextStyle(fontSize: 24, color: Color(0xFF666666)),
-            ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade600,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: const Text('やめる',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white)),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => QuizSessionScreen(
-                            category: widget.category,
-                            questionCount: widget.total),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4CAF50),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: const Text('もう1セット！',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white)),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// バッジポップアップ
-class BadgePopup extends StatelessWidget {
-  final String name;
-  final String icon;
-  const BadgePopup({super.key, required this.name, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    Future.delayed(const Duration(milliseconds: 2500), () {
-      if (context.mounted) Navigator.pop(context);
-    });
-
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.all(32),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-              colors: [Color(0xFFFFF9E6), Color(0xFFFFF3CC)]),
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: const Color(0xFFFFD700), width: 3),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 40)
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('BADGE UNLOCKED',
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFB8860B),
-                    letterSpacing: 2)),
-            const SizedBox(height: 8),
-            Text(icon, style: const TextStyle(fontSize: 72)),
-            const SizedBox(height: 10),
-            Text(name,
-                style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class LeaderboardScreen extends StatelessWidget {
-  const LeaderboardScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final weekStart = now.subtract(Duration(days: now.weekday - 1));
-    final weekKey =
-        '${weekStart.year}-W${weekStart.month.toString().padLeft(2, '0')}-${weekStart.day.toString().padLeft(2, '0')}';
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('週間ランキング'),
-        backgroundColor: const Color(0xFF5DADE2),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('leaderboard')
-            .where('weekKey', isEqualTo: weekKey)
-            .orderBy('completedCount', descending: true)
-            .limit(50)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final docs = snapshot.data!.docs;
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: docs.length,
-            itemBuilder: (context, i) {
-              final data = docs[i].data() as Map<String, dynamic>;
-              final count = data['completedCount'] ?? 0;
-              final rank = i + 1;
-
-              return Card(
-                margin: const EdgeInsets.only(bottom: 8),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: rank <= 3 ? Colors.amber : Colors.grey,
-                    child: Text('$rank',
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  title: Text('匿名ユーザー #${docs[i].id.substring(0, 8)}'),
-                  trailing: Text('$count タスク',
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold)),
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-}

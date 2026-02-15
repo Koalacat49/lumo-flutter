@@ -1,0 +1,647 @@
+﻿                ),
+              ),
+              const SizedBox(height: 20),
+              // Task list
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: tasks.length,
+                  itemBuilder: (context, i) {
+                    final task = tasks[i];
+                    final done = tasksCompleted[i];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => toggleComplete(i),
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: done
+                                    ? const Color(0xFF58CC02)
+                                    : Colors.white,
+                                border: Border.all(
+                                    color: done
+                                        ? const Color(0xFF58CC02)
+                                        : Colors.grey.shade400,
+                                    width: 3),
+                              ),
+                              child: Center(
+                                child: done
+                                    ? const Icon(Icons.check,
+                                        color: Colors.white, size: 20)
+                                    : Text('${i + 1}',
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black54)),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color:
+                                    done ? Colors.green.shade50 : Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2))
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    task['task'],
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color:
+                                            done ? Colors.grey : Colors.black87,
+                                        decoration: done
+                                            ? TextDecoration.lineThrough
+                                            : null),
+                                  ),
+                                  if (task['reason'] != null &&
+                                      task['reason'].toString().isNotEmpty) ...[
+                                    const SizedBox(height: 4),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          tasksExpanded[i] = !tasksExpanded[i];
+                                        });
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.lightbulb_outline,
+                                              size: 14,
+                                              color: Color(0xFFF39C12)),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            tasksExpanded[i]
+                                                ? '逅・罰繧帝國縺・
+                                                : '逅・罰繧定ｦ九ｋ',
+                                            style: const TextStyle(
+                                                fontSize: 11,
+                                                color: Color(0xFFF39C12)),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (tasksExpanded[i])
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Text(
+                                          task['reason'],
+                                          style: const TextStyle(
+                                              fontSize: 11,
+                                              color: Colors.black54),
+                                        ),
+                                      ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// 繧ｯ繧､繧ｺ繝｢繝ｼ繝繝ｫ
+class QuizModal extends StatefulWidget {
+  final String category;
+  final Function(bool success, String category) onComplete;
+  const QuizModal(
+      {super.key, required this.category, required this.onComplete});
+  @override
+  State<QuizModal> createState() => _QuizModalState();
+}
+
+class _QuizModalState extends State<QuizModal> {
+  late Map<String, dynamic> question;
+  int? selected;
+  bool showAnswer = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final questions =
+        QUIZ_QUESTIONS[widget.category] ?? QUIZ_QUESTIONS['vocabulary']!;
+    final list = (questions as List);
+    question = list[math.Random().nextInt(list.length)];
+  }
+
+  void handleAnswer() {
+    if (selected == null) return;
+    setState(() => showAnswer = true);
+    if (selected == question['answer']) {
+      Future.delayed(const Duration(milliseconds: 1500), () {
+        widget.onComplete(true, widget.category);
+        Navigator.pop(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(16)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(question['question'],
+                style: const TextStyle(fontSize: 15, color: Colors.black87)),
+            const SizedBox(height: 16),
+            ...List.generate((question['options'] as List).length, (idx) {
+              return GestureDetector(
+                onTap: showAnswer ? null : () => setState(() => selected = idx),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        color: selected == idx
+                            ? const Color(0xFF58CC02)
+                            : Colors.grey.shade300,
+                        width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                    color: showAnswer
+                        ? (idx == question['answer']
+                            ? Colors.green.shade50
+                            : selected == idx
+                                ? Colors.red.shade50
+                                : Colors.white)
+                        : selected == idx
+                            ? Colors.grey.shade100
+                            : Colors.white,
+                  ),
+                  child: Text((question['options'] as List)[idx],
+                      style:
+                          const TextStyle(fontSize: 14, color: Colors.black87)),
+                ),
+              );
+            }),
+            if (showAnswer)
+              Container(
+                margin: const EdgeInsets.only(top: 16),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                    color: selected == question['answer']
+                        ? Colors.green.shade50
+                        : Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(8)),
+                child: Column(
+                  children: [
+                    Text(selected == question['answer'] ? '豁｣隗｣・・ : '荳肴ｭ｣隗｣',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87)),
+                    const SizedBox(height: 4),
+                    Text(question['explanation'],
+                        style: const TextStyle(
+                            fontSize: 13, color: Colors.black87)),
+                  ],
+                ),
+              ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed:
+                        (selected == null || showAnswer) ? null : handleAnswer,
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: (selected == null || showAnswer)
+                            ? Colors.grey
+                            : const Color(0xFF58CC02)),
+                    child: const Text('蝗樒ｭ斐☆繧・,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      widget.onComplete(true, widget.category);
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade600),
+                    child: const Text('繧ｹ繧ｭ繝・・',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class QuizSessionScreen extends StatefulWidget {
+  final String category;
+  final int questionCount;
+
+  const QuizSessionScreen({
+    super.key,
+    required this.category,
+    required this.questionCount,
+  });
+
+  @override
+  State<QuizSessionScreen> createState() => _QuizSessionScreenState();
+}
+
+class _QuizSessionScreenState extends State<QuizSessionScreen> {
+  int currentIndex = 0;
+  int correctCount = 0;
+  List<Map<String, dynamic>> questions = [];
+  int? selectedOption;
+  bool showResult = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final allQuestions = QUIZ_QUESTIONS[widget.category] as List;
+    final shuffled = allQuestions.toList();
+    shuffled.shuffle();
+    questions = shuffled
+        .take(widget.questionCount)
+        .toList()
+        .cast<Map<String, dynamic>>();
+  }
+
+  void _nextQuestion(bool isCorrect) {
+    if (isCorrect) correctCount++;
+
+    if (currentIndex + 1 >= questions.length) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => QuizResultScreen(
+            category: widget.category,
+            total: questions.length,
+            correct: correctCount,
+          ),
+        ),
+      );
+    } else {
+      setState(() {
+        currentIndex++;
+        selectedOption = null;
+        showResult = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (questions.isEmpty)
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+
+    final question = questions[currentIndex];
+    final options = List<String>.from(question['options']);
+    final correctAnswer = question['answer'] as int;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: AppBar(
+        title: Text('${currentIndex + 1} / ${questions.length}'),
+        backgroundColor: const Color(0xFF5DADE2),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              question['question'],
+              style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF333333)),
+            ),
+            const SizedBox(height: 30),
+            ...List.generate(options.length, (i) {
+              final isSelected = selectedOption == i;
+              final isCorrect = i == correctAnswer;
+              Color? bgColor;
+              if (showResult) {
+                if (isCorrect)
+                  bgColor = Colors.green.shade100;
+                else if (isSelected) bgColor = Colors.red.shade100;
+              }
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: GestureDetector(
+                  onTap: showResult
+                      ? null
+                      : () {
+                          setState(() {
+                            selectedOption = i;
+                          });
+                        },
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: bgColor ??
+                          (isSelected ? Colors.blue.shade50 : Colors.white),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isSelected
+                            ? const Color(0xFF5DADE2)
+                            : Colors.grey.shade300,
+                        width: 2,
+                      ),
+                    ),
+                    child: Text(
+                      options[i],
+                      style: const TextStyle(
+                          fontSize: 16, color: Color(0xFF333333)),
+                    ),
+                  ),
+                ),
+              );
+            }),
+            const Spacer(),
+            if (!showResult && selectedOption != null)
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    showResult = true;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF5DADE2),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text('蝗樒ｭ斐☆繧・,
+                    style: TextStyle(fontSize: 18, color: Colors.white)),
+              ),
+            if (showResult)
+              Column(
+                children: [
+                  Text(
+                    selectedOption == correctAnswer ? '豁｣隗｣・・ : '荳肴ｭ｣隗｣...',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: selectedOption == correctAnswer
+                          ? Colors.green
+                          : Colors.red,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () {
+                      _nextQuestion(selectedOption == correctAnswer);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF5DADE2),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text(
+                      currentIndex + 1 >= questions.length ? '邨先棡繧定ｦ九ｋ' : '谺｡縺ｸ',
+                      style: const TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// 繧ｯ繧､繧ｺ繝ｪ繧ｶ繝ｫ繝育判髱｢
+class QuizResultScreen extends StatelessWidget {
+  final String category;
+  final int total;
+  final int correct;
+
+  const QuizResultScreen({
+    super.key,
+    required this.category,
+    required this.total,
+    required this.correct,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final percentage = (correct / total * 100).round();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('邨先棡'),
+        backgroundColor: const Color(0xFF5DADE2),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '$total蝠丈ｸｭ$correct蝠乗ｭ｣隗｣・・,
+              style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF333333)),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '豁｣隗｣邇・ $percentage%',
+              style: const TextStyle(fontSize: 24, color: Color(0xFF666666)),
+            ),
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // 繧・ａ繧九・繧ｿ繝ｳ
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey.shade600, // 繧医ｊ關ｽ縺｡逹縺・◆轣ｰ濶ｲ
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text('繧・ａ繧・,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white)),
+                ),
+                // 繧ゅ≧1蝗槭・繧ｿ繝ｳ
+                ElevatedButton(
+                  onPressed: () {
+                    // 縺薙％縺ｫ蜈ｷ菴鍋噪縺ｪ蜀阪メ繝｣繝ｬ繝ｳ繧ｸ縺ｮ繝ｭ繧ｸ繝・け繧定ｿｽ蜉
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => QuizSessionScreen(
+                          category: category,
+                          questionCount: total, // 蜷後§蝠城｡梧焚縺ｧ蜀肴倦謌ｦ
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4CAF50), // 繧医ｊ魄ｮ繧・°縺ｪ邱・
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text('繧ゅ≧1蝗・,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white)),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// 繝舌ャ繧ｸ繝昴ャ繝励い繝・・
+class BadgePopup extends StatelessWidget {
+  final String name;
+  final String icon;
+  const BadgePopup({super.key, required this.name, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    Future.delayed(const Duration(milliseconds: 2500), () {
+      if (context.mounted) Navigator.pop(context);
+    });
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+              colors: [Color(0xFFFFF9E6), Color(0xFFFFF3CC)]),
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: const Color(0xFFFFD700), width: 3),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 40)
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('BADGE UNLOCKED',
+                style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFB8860B),
+                    letterSpacing: 2)),
+            const SizedBox(height: 8),
+            Text(icon, style: const TextStyle(fontSize: 72)),
+            const SizedBox(height: 10),
+            Text(name,
+                style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LeaderboardScreen extends StatelessWidget {
+  const LeaderboardScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final weekStart = now.subtract(Duration(days: now.weekday - 1));
+    final weekKey =
+        '${weekStart.year}-W${weekStart.month.toString().padLeft(2, '0')}-${weekStart.day.toString().padLeft(2, '0')}';
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('騾ｱ髢薙Λ繝ｳ繧ｭ繝ｳ繧ｰ'),
+        backgroundColor: const Color(0xFF5DADE2),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('leaderboard')
+            .where('weekKey', isEqualTo: weekKey)
+            .orderBy('completedCount', descending: true)
+            .limit(50)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final docs = snapshot.data!.docs;
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: docs.length,
+            itemBuilder: (context, i) {
+              final data = docs[i].data() as Map<String, dynamic>;
+              final count = data['completedCount'] ?? 0;
+              final rank = i + 1;
+
+              return Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: rank <= 3 ? Colors.amber : Colors.grey,
+                    child: Text('$rank',
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  title: Text('蛹ｿ蜷阪Θ繝ｼ繧ｶ繝ｼ #${docs[i].id.substring(0, 8)}'),
+                  trailing: Text('$count 繧ｿ繧ｹ繧ｯ',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold)),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
